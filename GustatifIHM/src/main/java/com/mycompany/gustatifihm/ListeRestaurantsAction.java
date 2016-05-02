@@ -27,7 +27,6 @@ public class ListeRestaurantsAction extends Action {
         } catch (Throwable ex) {
             Logger.getLogger(ListeRestaurantsAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Gson gson = new GsonBuilder().create();
         request.setAttribute("restaurants", restaurants);
     }
 }

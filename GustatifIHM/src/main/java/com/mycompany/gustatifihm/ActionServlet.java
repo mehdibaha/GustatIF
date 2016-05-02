@@ -51,14 +51,9 @@ public class ActionServlet extends HttpServlet {
                     action.setServiceMetier(sm);
                     action.execute(request);
                     
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    JsonObject container = new JsonObject();
+                    MySerialiser ms = new MySerialiser();
                     Object restaurants = request.getAttribute("restaurants");
-                    container.add("restaurants", gson.toJsonTree(restaurants));
-                    String json = gson.toJson(container);
-                    out.println(json);
-                    //RequestDispatcher rd = request.getRequestDispatcher("/ServletVueRestaurant");
-                    //rd.forward(request,response);
+                    ms.printListRestaurants(out, (List<Restaurant>) restaurants);
                     break;
                 }
             }

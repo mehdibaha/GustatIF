@@ -27,12 +27,13 @@
                 })
                 .done(function(data) {
                     var restaurants = data.restaurants;
-                    var contenuHtml = '<ul>';
+                    var contenuHtml = '<p><b>Liste des restaurants :</b><br/>';
                     var i;
                     for (i = 0; i < restaurants.length; i++) {
-                        contenuHtml += '<li>' + restaurants[i].denomination + '</li>';
+                        contenuHtml += '[' + restaurants[i].id + '] ' + restaurants[i].denomination +
+                                ' <a href="ActionServlet?todo=restaurant&id=' + restaurants[i].id + '">voir</a><br />';
                     }
-                    contenuHtml += '</ul>';
+                    contenuHtml += '</p>';
                     $('#listeRestaurants').html(contenuHtml);
                 })
                 .fail(function() {
