@@ -1,0 +1,8 @@
+--
+-- Dumping data for table SEQUENCE
+--
+
+-- REMPLACEMENT DE LA VALEUR (si elle existe...)
+DELETE FROM SEQUENCE WHERE SEQ_NAME = 'SEQ_GEN';
+INSERT INTO SEQUENCE VALUES ('SEQ_GEN',1150);
+
