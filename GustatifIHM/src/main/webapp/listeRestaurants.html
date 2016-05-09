@@ -7,16 +7,14 @@
         <script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
     </head>
     <body>
-        <h1>Gustat'IF &ndash; Liste des Restaurants</h1>
+        <h1 id='title'>Gustat'IF &ndash; Liste des Restaurants</h1>
         <div id='listeRestaurants'>
             <span>chargement en cours...</span>
         </div>
-
-
+        
         <script>
 
             $(function() {
-
                 $.ajax({
                     url: './ActionServlet',
                     type: 'POST',
@@ -31,7 +29,7 @@
                     var i;
                     for (i = 0; i < restaurants.length; i++) {
                         contenuHtml += '[' + restaurants[i].id + '] ' + restaurants[i].denomination +
-                                ' <a href="ActionServlet?todo=restaurant&id=' + restaurants[i].id + '">voir</a><br />';
+                                ' <a href="#" onclick=detaillerRestaurant(' + restaurants[i].id + ')>voir</a><br />';
                     }
                     contenuHtml += '</p>';
                     $('#listeRestaurants').html(contenuHtml);
@@ -42,9 +40,35 @@
                 .always(function() {
                     //
                 });
-
             });
-
+            
+            function detaillerRestaurant(id) {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'POST',
+                    data: {
+                        todo: 'restaurant',
+                        idRestaurant: id
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var restaurant = data;
+                    var title = restaurant.denomination;
+                    var contenuHtml = '<p>' + restaurant.adresse + '<br/>';
+                    contenuHtml += restaurant.description + '</p>';
+                    
+                    $('#title').html(title);
+                    $('#listeRestaurants').html(contenuHtml);
+                })
+                .fail(function() {
+                    $('#title').html('ERREUR');
+                    $('#listeRestaurants').html('ERREUR de chargement');
+                })
+                .always(function() {
+                    //
+                });
+            };
         </script>
     </body>
 </html>

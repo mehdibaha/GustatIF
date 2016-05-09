@@ -5,25 +5,31 @@
  */
 package com.mycompany.gustatifihm;
 import javax.servlet.http.HttpServletRequest;
-import modele.Restaurant;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modele.Client;
 
 /**
  *
  * @author tthibault
  */
-public class ListeRestaurantsAction extends Action {
+public class ConnexionAction extends Action {
     @Override
     public void execute(HttpServletRequest request)
     {
-        List<Restaurant> restaurants = null;
-        try {
-            restaurants = this.serviceMetier.ListerRestaurants();
+        String mail;
+        String pass;
+        Client client = null;
+        
+        try 
+        {
+            mail = request.getParameter("mail");
+            pass = request.getParameter("pass");
+            client = this.serviceMetier.ConnecterClient(mail, pass);
         } catch (Throwable ex) {
-            Logger.getLogger(ListeRestaurantsAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConnexionAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        request.setAttribute("restaurants", restaurants);
+       
+        request.setAttribute("client", client);
     }
 }

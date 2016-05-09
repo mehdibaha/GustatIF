@@ -114,9 +114,8 @@ public class Main {
               + " Ce programme en ligne de commande présente un exemple des fonctionnalitées de l'application Gustat'IF.\n"
               + "Veuillez vous référer au document de conception pour obtenir une liste complète des services.\n"
         );
-        JpaUtil.creerEntityManager();
         int choix = 0;
-        while (choix!=11){
+        while (choix!=12){
             choix = Menu();
             switch (choix){
                 case 1:
@@ -151,6 +150,10 @@ public class Main {
                     DisplayTab(ListerLivreurs());
                     break;
                 case 11:
+                    Client client = ConnecterClient("asing8183@free.fr", "azerty");
+                    System.out.println(TrouverClientParId(client.getId()));
+                    break;
+                case 12:
                     System.out.println("À bientôt...");
                     break;
                 default:
@@ -158,6 +161,5 @@ public class Main {
                     break;
             }
         }
-        JpaUtil.fermerEntityManager();
     }
 }
