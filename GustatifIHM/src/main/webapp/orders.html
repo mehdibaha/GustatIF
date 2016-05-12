@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gustat'IF - Commandes</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/index.css" rel="stylesheet">
+  </head>
+
+  <body class="home">
+    <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Gustat'IF</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="home.html">Restaurants</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="orders.html">Mes commandes</a></li>
+                <li><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div class="container page-header">
+        <div>
+            <h1>Le Boeuf d'argent</h1>
+            <p class="small">29 rue du Boeuf Lyon 5ème</p><br />
+        </div>
+        <h4>Faites votre sélection parmi les délices proposés par cet établissement</h4><br />
+        <div>
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    <div><b>Plats</b></div>
+                </div>
+                <div class="col-md-2">
+                    <div><b>Quantité</b></div>
+                </div>
+                <div class="col-md-2">
+                    <div><b>Prix</b></div>
+                </div>
+            </div> <!-- /row -->
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    <div>Côte de boeufs et poêlée de légumes</div>
+                </div>
+                <div class="col-md-2">
+                    <div>
+                        <input type="number"></input>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div>18€</div>
+                </div>
+            </div> <!-- /row -->
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    <div>Andouillette et gratin dauphinois</div>
+                </div>
+                <div class="col-md-2">
+                    <div>
+                        <input type="number"></input>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div>16€</div>
+                </div>
+            </div> <!-- /row -->
+            <div class="row">
+                <div class="col-md-8" style="text-align:left">
+                    <div>Andouillette et gratin dauphinois</div>
+                </div>
+                <div class="col-md-2">
+                    <div>
+                        <input type="number"></input>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div>16€</div>
+                </div>
+            </div> <!-- /row -->
+        </div><br />
+        <div class="row">
+            <label for="price">Prix Total:</label>
+            <input type="text" class="form-inline" id="price" value="23€" disabled>
+        </div><br />
+        <div class="row">
+            <button class="btn btn-lg btn-primary" type="submit">Je commande !</button>
+        </div>
+    </div> <!-- /container -->
+
+  </body>
+</html>

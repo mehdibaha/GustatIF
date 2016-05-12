@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gustat'IF - Modification infos</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/index.css" rel="stylesheet">
+  </head>
+
+  <body class="home">
+    <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Gustat'IF</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="home.html">Restaurants</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="orders.html">Mes commandes</a></li>
+                <li class="active"><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div class="container">
+      <form class="form-signin">
+        <div class="page-header">
+            <h1>Modification de vos informations personnelles</h1>
+            <p>Modifiez le champ correspondant à l'information de votre choix</p><br />
+        </div>
+        <label for="inputNom">Nom</label>
+        <input type="text" id="inputNom" class="form-control" placeholder="Ancien nom" required autofocus><br />
+        <label for="inputPrenom">Prénom</label>
+        <input type="text" id="inputPrenom" class="form-control" placeholder="Ancien prénom" required autofocus><br />
+        <label for="inputAdresse">Adresse</label>
+        <input type="text" id="inputAdresse" class="form-control" placeholder="Ancienne adresse 69100 Villeurbanne" required autofocus><br />
+        <label for="inputEmail">Email</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="ancienneadresse@example.com" required autofocus><br />
+        <label for="inputMdp" class="sr-only">Nouveau mot de passe</label>
+        <input type="password" id="inputMdp" class="form-control" placeholder="Nouveau mot de passe" required>
+        <label for="inputConfirmMdp" class="sr-only">Confirmer mot de passe</label>
+        <input type="password" id="inputConfirmMdp" class="form-control" placeholder="Ancien mot de passe" required>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="conditions">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
+            </label>
+            <label>
+                <input type="checkbox" value="geo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmer</button>
+      </form>
+
+    </div> <!-- /container -->
+
+  </body>
+</html>
