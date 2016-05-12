@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gustat'IF - Inscription</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/index.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin">
+        <div class="page-header">
+            <h1>Inscription</h1>
+            <p>Veuillez remplir les champs suivants afin de fournir vos informations personnelles</p><br />
+        </div>
+        <label for="inputNom" class="sr-only">Nom</label>
+        <input type="text" id="inputNom" class="form-control" placeholder="Nom" required autofocus><br />
+        <label for="inputPrenom" class="sr-only">Prénom</label>
+        <input type="text" id="inputPrenom" class="form-control" placeholder="Prenom" required autofocus><br />
+        <label for="inputAdresse" class="sr-only">Adresse</label>
+        <input type="text" id="inputAdresse" class="form-control" placeholder="Adresse" required autofocus><br />
+        <label for="inputEmail" class="sr-only">Email</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Adresse email" required autofocus><br /><br />
+        <label for="inputMdp" class="sr-only">Mot de passe</label>
+        <input type="password" id="inputMdp" class="form-control" placeholder="Mot de passe" required>
+        <label for="inputConfirmMdp" class="sr-only">Confirmer mot de passe</label>
+        <input type="password" id="inputConfirmMdp" class="form-control" placeholder="Confirmer mot de passe" required>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="conditions">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
+            </label>
+            <label>
+                <input type="checkbox" value="geo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
+      </form>
+
+    </div> <!-- /container -->
+
+  </body>
+</html>
