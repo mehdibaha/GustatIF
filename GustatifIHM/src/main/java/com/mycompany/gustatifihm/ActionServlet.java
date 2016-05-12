@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import modele.Client;
+import modele.Commande;
+import modele.Livreur;
 import modele.Produit;
 import modele.Restaurant;
 import service.ServiceMetier;
@@ -143,8 +145,78 @@ public class ActionServlet extends HttpServlet {
                             action.setServiceMetier(sm);
                             action.execute(request);
 
-                            Object produits = request.getAttribute("plats");
-                            ms.printPlats(out, (List<Produit>)produits);
+                            Object commande = request.getAttribute("commande");
+                            ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "validerCommande" :
+                        {
+                            Action action = new ValiderCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object commande = request.getAttribute("commande");
+                            //ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "creerCommande" :
+                        {
+                            Action action = new CreerCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object commande = request.getAttribute("commande");
+                            //ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "listeCommandesClient" : 
+                        {
+                            Action action = new ListCommandesClientAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object commandes = request.getAttribute("commandes");
+                            ms.printListCommandes(out, (List<Commande>) commandes);
+                            break;
+                        }
+                        case "listeCommandes" : 
+                        {
+                            Action action = new ListCommandesAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object commandes = request.getAttribute("commandes");
+                            ms.printListCommandes(out, (List<Commande>) commandes);
+                            break;
+                        }
+                        case "listeClients" : 
+                        {
+                            Action action = new ListClientsAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object clients = request.getAttribute("clients");
+                            ms.printListClients(out, (List<Client>) clients);
+                            break;
+                        }
+                        case "listeProduits" : 
+                        {
+                            Action action = new ListProduitsAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produits = request.getAttribute("produits");
+                            ms.printPlats(out, (List<Produit>) produits);
+                            break;
+                        }
+                        case "listeLivreurs" : 
+                        {
+                            Action action = new ListLivreursAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object livreurs = request.getAttribute("livreurs");
+                            ms.printListLivreurs(out, (List<Livreur>) livreurs);
                             break;
                         }
                     }

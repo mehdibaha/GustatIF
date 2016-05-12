@@ -211,8 +211,10 @@ public class ServiceMetier {
         if(geoloc && conditions && VerificationMdp(mdp,mdp2))
         {
             
+            JpaUtil.creerEntityManager();
             ClientDao cdao = new ClientDao();
             List<Client> clients = cdao.findByMail(mail);
+            JpaUtil.fermerEntityManager();
             if(clients.isEmpty())
             {
                 LatLng coords = getLatLng(adresse);
