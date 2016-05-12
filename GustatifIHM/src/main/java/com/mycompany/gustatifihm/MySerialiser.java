@@ -8,9 +8,12 @@ import java.io.PrintWriter;
 import java.util.List;
 import modele.Client;
 import modele.Commande;
+import modele.Drone;
+import modele.Livreur;
 import modele.Produit;
 import modele.ProduitCommande;
 import modele.Restaurant;
+import modele.Velo;
 
 public class MySerialiser {
     public void printListRestaurants(PrintWriter out, List<Restaurant> restaurants)
@@ -25,6 +28,8 @@ public class MySerialiser {
             jsonRestaurant.addProperty("id", r.getId());
             jsonRestaurant.addProperty("denomination", r.getDenomination());
             jsonRestaurant.addProperty("description", r.getDescription());
+            jsonRestaurant.addProperty("latitude", r.getLatitude());
+            jsonRestaurant.addProperty("longitude", r.getLongitude());
             
             jsonListe.add(jsonRestaurant);
         }
@@ -138,14 +143,80 @@ public class MySerialiser {
             
             jsonCommande.addProperty("id", c.getId());
             jsonCommande.addProperty("restaurant", c.getRestaurant().getDenomination());
-            jsonCommande.addProperty("date", c.getDateDebut().toString());
+            jsonCommande.addProperty("dateDebut", c.getDateDebut().toString());
+            jsonCommande.addProperty("dateFin", c.getDateFin().toString());
             jsonCommande.addProperty("etat", c.getStatus().toString());
+            jsonCommande.addProperty("latitude", c.getClient().getLatitude());
+            jsonCommande.addProperty("longitude", c.getClient().getLongitude());
             
             jsonListe.add(jsonCommande);
         }
         
         JsonObject container = new JsonObject();
         container.add("commandes", jsonListe);
+        String json = gson.toJson(container);
+        out.println(json);
+    }
+    
+    public void printListClients(PrintWriter out, List<Client> clients)
+    {
+        JsonArray jsonListe = new JsonArray();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        for (Client c : clients)
+        {
+            JsonObject jsonClient = new JsonObject();
+            
+            jsonClient.addProperty("id", c.getId());
+            jsonClient.addProperty("prenom", c.getPrenom());
+            jsonClient.addProperty("nom", c.getNom());
+            jsonClient.addProperty("adresse", c.getAdresse());
+            jsonClient.addProperty("email", c.getMail());
+            jsonClient.addProperty("latitude", c.getLatitude());
+            jsonClient.addProperty("longitude", c.getLongitude());
+            
+            jsonListe.add(jsonClient);
+        }
+        
+        JsonObject container = new JsonObject();
+        container.add("clients", jsonListe);
+        String json = gson.toJson(container);
+        out.println(json);
+    }
+    
+    public void printListLivreurs(PrintWriter out, List<Livreur> livreurs)
+    {
+        JsonArray jsonListe = new JsonArray();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        for (Livreur l : livreurs)
+        {
+            JsonObject jsonLivreur = new JsonObject();
+            
+            jsonLivreur.addProperty("id", l.getId());
+            jsonLivreur.addProperty("chargeMax", l.getChargeMax());
+            
+            if(l instanceof Velo)
+            {
+                jsonLivreur.addProperty("type", "Vélo");
+                jsonLivreur.addProperty("vitesse", "-");
+                jsonLivreur.addProperty("nom", ((Velo)l).getName());
+            }
+            else if(l instanceof Drone)
+            { 
+                jsonLivreur.addProperty("type", "Vélo");
+                jsonLivreur.addProperty("vitesse", ((Drone)l).getVitesseMoy());
+                jsonLivreur.addProperty("nom", "-");
+            }
+            jsonLivreur.addProperty("latitude", l.getLatitude());
+            jsonLivreur.addProperty("longitude", l.getLongitude());
+            jsonLivreur.addProperty("dispo", l.isDispo());
+            
+            jsonListe.add(jsonLivreur);
+        }
+        
+        JsonObject container = new JsonObject();
+        container.add("livreurs", jsonListe);
         String json = gson.toJson(container);
         out.println(json);
     }
