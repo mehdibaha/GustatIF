@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import modele.Client;
+import modele.Commande;
 import modele.Produit;
 import modele.Restaurant;
 import service.ServiceMetier;
@@ -143,8 +144,38 @@ public class ActionServlet extends HttpServlet {
                             action.setServiceMetier(sm);
                             action.execute(request);
 
-                            Object produits = request.getAttribute("plats");
-                            ms.printPlats(out, (List<Produit>)produits);
+                            Object commande = request.getAttribute("commande");
+                            ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "validerCommande" :
+                        {
+                            Action action = new ValiderCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object commande = request.getAttribute("commande");
+                            //ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "creerCommande" :
+                        {
+                            Action action = new CreerCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object commande = request.getAttribute("commande");
+                            //ms.printInfosCommande(out, (Commande) commande);
+                            break;
+                        }
+                        case "listeCommandesClient" : 
+                        {
+                            Action action = new ListCommandesClientAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object commandes = request.getAttribute("commandes");
+                            ms.printListCommandes(out, (List<Commande>) commandes);
                             break;
                         }
                     }
