@@ -35,12 +35,69 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Interface Administrateur</h1>
-          
-          <h2 class="sub-header">Overview</h2>
-          <div id="map">
-            
+          <h3 class="sub-header">Ajouter un produit</h3>
+          <div class="table-responsive">
+            <div class="input-group">
+              <input type="text" class="form-inline" placeholder="id restaurant" id="idresto">
+              <input type="text" class="form-inline" placeholder="Nom" id="name">
+              <input type="text" class="form-inline" placeholder="Description" id="description">
+              <input type="number" placeholder="Poids 0g"></input>
+              <input type="number" placeholder="Prix 0€"></input>
+              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+            </div>
+            <h3 class="sub-header">Liste des produits</h3>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Dénomination</th>
+                  <th>Description</th>
+                  <th>Prix</th>
+                  <th>Poids</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>1</th>
+                  <th>Tartelette</th>
+                  <th>Une bonne tartelette à la fraise</th>
+                  <th>5€</th>
+                  <th>80g</th>
+                </tr>
+                <tr>
+                  <th>1</th>
+                  <th>Tartelette</th>
+                  <th>Une bonne tartelette à la fraise</th>
+                  <th>5€</th>
+                  <th>80g</th>
+                </tr>
+              </tbody>
+            </table>
+
+            <nav class="text-center">
+              <ul class="pagination">
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-        </div>
+          
+          </div>
       </div>
     </div>
 
@@ -57,7 +114,10 @@
           center: {lat: 44.540, lng: -78.546},
           zoom: 8
         });
-      }
+    }
+    $(window).resize(function(){ 
+          $('#map').height($( window ).height());
+    });
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
          async defer></script>
