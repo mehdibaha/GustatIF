@@ -34,7 +34,7 @@ public class InscriptionAction extends Action {
             adresse = request.getParameter("adresse");
             mail = request.getParameter("mail");
             mdp = request.getParameter("mdp");
-            mdp2 = request.getParameter("mdp");
+            mdp2 = request.getParameter("mdp2");
             conditions = Boolean.parseBoolean(request.getParameter("conditions"));
             geoloc = Boolean.parseBoolean(request.getParameter("geoloc"));
             client = this.serviceMetier.CreerClient(nom,prenom,adresse,mail,mdp,mdp2,conditions,geoloc);

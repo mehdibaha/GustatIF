@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import java.io.PrintWriter;
 import java.util.List;
 import modele.Client;
+import modele.Produit;
 import modele.Restaurant;
 
 public class MySerialiser {
@@ -62,6 +63,30 @@ public class MySerialiser {
         
         jsonConnexion.addProperty("id", c.getId());
         String json = gson.toJson(jsonConnexion);      
+        out.println(json);
+    }
+    
+    public void printPlats(PrintWriter out, List<Produit> produits)
+    {
+        JsonArray jsonListe = new JsonArray();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        for (Produit p : produits)
+        {
+            JsonObject jsonProduit = new JsonObject();
+            
+            jsonProduit.addProperty("id", p.getId());
+            jsonProduit.addProperty("denomination", p.getDenomination());
+            jsonProduit.addProperty("description", p.getDescription());
+            jsonProduit.addProperty("prix", p.getPrix());
+            jsonProduit.addProperty("poids", p.getPoids());
+            
+            jsonListe.add(jsonProduit);
+        }
+        
+        JsonObject container = new JsonObject();
+        container.add("produits", jsonListe);
+        String json = gson.toJson(container);
         out.println(json);
     }
 }

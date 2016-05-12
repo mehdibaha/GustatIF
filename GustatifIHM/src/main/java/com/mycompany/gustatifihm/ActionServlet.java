@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 import modele.Client;
+import modele.Produit;
 import modele.Restaurant;
 import service.ServiceMetier;
 
@@ -124,6 +125,26 @@ public class ActionServlet extends HttpServlet {
 
                             //Object restaurant = request.getAttribute("restaurant");
                             //ms.printFicheRestaurant(out, (Restaurant)restaurant);
+                            break;
+                        }
+                        case "getPlats" :
+                        {
+                            Action action = new GetPlatsAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produits = request.getAttribute("plats");
+                            ms.printPlats(out, (List<Produit>)produits);
+                            break;
+                        }
+                        case "infosCommande" :
+                        {
+                            Action action = new InfosCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produits = request.getAttribute("plats");
+                            ms.printPlats(out, (List<Produit>)produits);
                             break;
                         }
                     }
