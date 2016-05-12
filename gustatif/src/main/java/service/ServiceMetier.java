@@ -25,6 +25,8 @@ public class ServiceMetier {
      * @return La commande créée ou null
      */
     public static Commande CreerCommande(Client client, Restaurant restaurant, List<ProduitCommande> produits) throws Throwable{
+        
+        JpaUtil.creerEntityManager();
         ProduitDao pDao = new ProduitDao();
         LivreurDao lDao = new LivreurDao();
         CommandeDao cDao = new CommandeDao();
@@ -60,10 +62,12 @@ public class ServiceMetier {
             Commande c = new Commande(client, restaurant, livreur, produits);
             cDao.create(c);
             JpaUtil.validerTransaction();
+            JpaUtil.fermerEntityManager();
             return c;
         }
         
         System.out.println("Impossible d'établir la commande.");
+        JpaUtil.fermerEntityManager();
         return null;
     }
     
@@ -75,7 +79,9 @@ public class ServiceMetier {
     public static boolean ValiderCommande(Commande commande) throws Throwable{
         CommandeDao cDao = new CommandeDao();
         
+        
         if (commande.getStatus() == Commande.CommandeStatus.VALIDATION){
+            JpaUtil.creerEntityManager();
             commande.setStatus(Commande.CommandeStatus.ENCOURS);
             JpaUtil.ouvrirTransaction();
             cDao.update(commande);
@@ -83,6 +89,7 @@ public class ServiceMetier {
             if (commande.getLivreur() instanceof Velo) {
                 System.out.println(GenererMailLivreurVelo(commande));
             }
+            JpaUtil.fermerEntityManager();
             return true;
         }
         System.out.println("La commande n'a pas été validée.");
@@ -98,7 +105,9 @@ public class ServiceMetier {
         CommandeDao cDao = new CommandeDao();
         LivreurDao lDao = new LivreurDao();
         
+        
         if (commande.getStatus() == Commande.CommandeStatus.VALIDATION){
+            JpaUtil.creerEntityManager();
             commande.setStatus(Commande.CommandeStatus.ANNULEE);
             Livreur livreur = commande.getLivreur();
             JpaUtil.ouvrirTransaction();
@@ -108,6 +117,7 @@ public class ServiceMetier {
             }
             cDao.update(commande);
             JpaUtil.validerTransaction();
+            JpaUtil.fermerEntityManager();
             return true;
         }
         System.out.println("La commande n'a pas été annulée.");
@@ -123,7 +133,9 @@ public class ServiceMetier {
         CommandeDao cDao = new CommandeDao();
         LivreurDao lDao = new LivreurDao();
         
+      
         if (commande.getStatus() == Commande.CommandeStatus.ENCOURS){
+            JpaUtil.creerEntityManager();
             commande.setStatus(Commande.CommandeStatus.LIVREE);
             commande.setDateFin(new Date());
             Livreur livreur = commande.getLivreur();
@@ -134,6 +146,7 @@ public class ServiceMetier {
             }
             cDao.update(commande);
             JpaUtil.validerTransaction();
+            JpaUtil.fermerEntityManager();
             return true;
         }
         System.out.println("La commande n'a pas été terminée.");
@@ -143,7 +156,10 @@ public class ServiceMetier {
     // ------------ Services Livreurs
     public static Velo AjouterVelo(Double chargeMax, String nom, String adresse){
         LatLng coordonees;
+        
+        
         if ((coordonees = getLatLng(adresse)) != null){
+            JpaUtil.creerEntityManager();
              LivreurDao ldao = new LivreurDao();
              Velo v = new Velo(chargeMax, nom);
              v.setLatitude(coordonees.lat);
@@ -151,6 +167,7 @@ public class ServiceMetier {
              JpaUtil.ouvrirTransaction();
              ldao.create(v);
              JpaUtil.validerTransaction();
+             JpaUtil.fermerEntityManager();
              return v;
         }
         return null;
@@ -158,7 +175,10 @@ public class ServiceMetier {
     
     public static Drone AjouterDrone(Double chargeMax, Double vitesseMoy, String adresse){
         LatLng coordonees;
+        
+        
         if ((coordonees = getLatLng(adresse)) != null){
+            JpaUtil.creerEntityManager();
              LivreurDao ldao = new LivreurDao();
              Drone d = new Drone(chargeMax, vitesseMoy);
              d.setLatitude(coordonees.lat);
@@ -166,6 +186,7 @@ public class ServiceMetier {
              JpaUtil.ouvrirTransaction();
              ldao.create(d);
              JpaUtil.validerTransaction();
+             JpaUtil.fermerEntityManager();
              return d;
         }
         return null;
@@ -186,6 +207,7 @@ public class ServiceMetier {
      */
     public static Client CreerClient(String nom, String prenom, String adresse, String mail, String mdp, String mdp2, boolean conditions, boolean geoloc) throws Throwable
     {
+        
         if(geoloc && conditions && VerificationMdp(mdp,mdp2))
         {
             
@@ -195,6 +217,7 @@ public class ServiceMetier {
             {
                 LatLng coords = getLatLng(adresse);
                 if (coords !=null) {
+                    JpaUtil.creerEntityManager();
                     Client client = new Client(nom,prenom,adresse,mail);
                     client.setMotPasse(mdp);
                     client.setCoordonnees(coords);
@@ -203,6 +226,7 @@ public class ServiceMetier {
                     JpaUtil.validerTransaction();
                     System.out.println("Bonjour " + client.getPrenom() +",");
                     System.out.println("Nous vous confirmons votre inscription au service Gustat'IF. Votre numéro de client est : "+ client.getId() +".");
+                    JpaUtil.fermerEntityManager();
                     return client;
                 } else {
                     System.out.println("Adresse postale invalide");
@@ -234,6 +258,7 @@ public class ServiceMetier {
      */
     public static Restaurant CreerRestaurant(String denomination, String description, String adresse) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         RestaurantDao rdao = new RestaurantDao();
         Restaurant restaurant = new Restaurant(denomination, description, adresse);
         LatLng coords = getLatLng(adresse);
@@ -242,6 +267,7 @@ public class ServiceMetier {
         rdao.create(restaurant);
         JpaUtil.validerTransaction();
         System.out.println("Restaurant " + restaurant.getId() + " créé avec succcès");
+        JpaUtil.fermerEntityManager();
         return restaurant;
     }
     /**
@@ -255,12 +281,14 @@ public class ServiceMetier {
      */
     public static Produit CreerProduit(String denomination, String description, Float prix, Float poids) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         ProduitDao pdao = new ProduitDao();
         Produit produit = new Produit(denomination, description, prix, poids);
         JpaUtil.ouvrirTransaction();
         pdao.create(produit);
         JpaUtil.validerTransaction();
         System.out.println("Produit " + produit.getId() + " créé avec succès");
+        JpaUtil.fermerEntityManager();
         return produit;
     }
     
@@ -280,6 +308,7 @@ public class ServiceMetier {
      */
     public static void ModifierInfoPersos(Client client, String nom, String prenom, String adresse, String mail, String mdp, String mdp2, boolean conditions, boolean geoloc) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         if(geoloc && conditions && VerificationMdp(mdp,mdp2))
         {
             
@@ -298,6 +327,7 @@ public class ServiceMetier {
         {
             System.out.println("Les mots de passe ne correspondent pas");
         }
+        JpaUtil.fermerEntityManager();
     }
     
     /**
@@ -307,8 +337,10 @@ public class ServiceMetier {
      */
     public static void RenvoyerMotDePasse(String mail) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         ClientDao cdao = new ClientDao();
         List<Client> clients = cdao.findByMail(mail);
+        JpaUtil.fermerEntityManager();
         if(clients.isEmpty())
         {
             System.out.println("Adresse mail incorrecte");
@@ -331,8 +363,10 @@ public class ServiceMetier {
      */
     public static Client ConnecterClient(String mail, String mdp) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         ClientDao cdao = new ClientDao();
         List<Client> clients = cdao.findByMail(mail);
+        JpaUtil.fermerEntityManager();
         if(clients.isEmpty())
         {
             System.out.println("Adresse mail incorrecte");
@@ -349,6 +383,7 @@ public class ServiceMetier {
                 System.out.println("Mot de passe incorrect");
             }
         }
+        
         return null;
     }
     
@@ -373,8 +408,10 @@ public class ServiceMetier {
      */
     public static List<Commande> ListerCommandesClient(Client client) throws Throwable
     {
+        JpaUtil.creerEntityManager();
         CommandeDao cdao = new CommandeDao();
         List<Commande> commandes = cdao.findByClientId(client.getId());
+        JpaUtil.fermerEntityManager();
         return commandes;
     }
     
@@ -413,12 +450,14 @@ public class ServiceMetier {
      */
     public static Client TrouverClientParId(Long id) throws Throwable
     {
+        JpaUtil.creerEntityManager();
          ClientDao cdao = new ClientDao();
          Client client = cdao.findById(id);
          if(client == null)
          {
              System.out.println("Client introuvable");
          }
+         JpaUtil.fermerEntityManager();
          return client;
     }
     
@@ -430,12 +469,14 @@ public class ServiceMetier {
      */
      public static Commande TrouverCommandeParId(Long id) throws Throwable
     {
+        JpaUtil.creerEntityManager();
          CommandeDao cdao = new CommandeDao();
          Commande commande = cdao.findById(id);
          if(commande == null)
          {
              System.out.println("Commande introuvable");
          }
+         JpaUtil.fermerEntityManager();
          return commande;
     }
      
@@ -445,15 +486,17 @@ public class ServiceMetier {
      * @return restaurant le restaurant trouvé
      * @throws Throwable
      */
-    public static Restaurant TrouverRestaurantParId(Long id) throws Throwable
+    public static Restaurant TrouverRestaurantParId(long id) throws Throwable
     {
-         RestaurantDao rdao = new RestaurantDao();
-         Restaurant restaurant = rdao.findById(id);
-         if(restaurant == null)
+        JpaUtil.creerEntityManager();
+        RestaurantDao rdao = new RestaurantDao();
+        Restaurant restaurant = rdao.findById(id);
+        if(restaurant == null)
          {
              System.out.println("Restaurant introuvable");
          }
-         return restaurant;
+        JpaUtil.fermerEntityManager();
+        return restaurant;
     }
     
     /**
@@ -463,8 +506,10 @@ public class ServiceMetier {
      */
     public static List<Produit> ListerProduits() throws Throwable
     {
+        JpaUtil.creerEntityManager();
         ProduitDao pdao = new ProduitDao();
         List<Produit> produits = pdao.findAll(); 
+        JpaUtil.fermerEntityManager();
         return produits;
     }
      /**
@@ -474,8 +519,10 @@ public class ServiceMetier {
      */
     public static List<Commande> ListerCommandes() throws Throwable
     {
+        JpaUtil.creerEntityManager();
         CommandeDao cdao = new CommandeDao();
-        List<Commande> commandes = cdao.findAll(); 
+        List<Commande> commandes = cdao.findAll();
+        JpaUtil.fermerEntityManager();
         return commandes;
     }
     
@@ -486,8 +533,10 @@ public class ServiceMetier {
      */
     public static List<Livreur> ListerLivreurs() throws Throwable
     {
+        JpaUtil.creerEntityManager();
         LivreurDao ldao = new LivreurDao();
         List<Livreur> livreurs = ldao.findAll(Livreur.ALL_TYPE); 
+        JpaUtil.fermerEntityManager();
         return livreurs;
     }
     
@@ -498,8 +547,10 @@ public class ServiceMetier {
      */
     public static List<Client> ListerClients() throws Throwable
     {
+        JpaUtil.creerEntityManager();
         ClientDao cdao = new ClientDao();
         List<Client> clients = cdao.findAll();
+        JpaUtil.fermerEntityManager();
         return clients;
     }
     /**
@@ -512,5 +563,4 @@ public class ServiceMetier {
         int nombre = cdao.getCommandesEnCours();
         return nombre;
     }
-    
 }

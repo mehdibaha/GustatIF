@@ -55,8 +55,12 @@ public class ClientDao {
     }
     
     public List<Client> findByMail(String mail) throws Throwable {
+        
         EntityManager em = JpaUtil.obtenirEntityManager();
         List<Client> clients = null;
+        System.out.println(em == null);
+        System.out.println(em == null);
+        System.out.println(em == null);
         try {
             Query q = em.createQuery("SELECT c FROM Client c WHERE c.mail = :mail").setParameter("mail", mail);   
             clients = (List<Client>) q.getResultList();

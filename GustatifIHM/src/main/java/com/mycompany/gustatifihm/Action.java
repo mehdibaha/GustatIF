@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
  * @author tthibault
  */
 public abstract class Action {
-    ServiceMetier serviceMetier;
+    
+    protected ServiceMetier serviceMetier;
     public abstract void execute(HttpServletRequest request);
     public void setServiceMetier(ServiceMetier service)
     {

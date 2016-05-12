@@ -5,10 +5,6 @@
  */
 package com.mycompany.gustatifihm;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -18,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpSession;
+import modele.Client;
+import modele.Produit;
 import modele.Restaurant;
 import service.ServiceMetier;
 
@@ -37,24 +36,118 @@ public class ActionServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-    {
+    {   
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        
         try (PrintWriter out = response.getWriter()) 
         {
+            HttpSession session = request.getSession(true); //Session   
+            ServiceMetier sm = new ServiceMetier();
+            MySerialiser ms = new MySerialiser();
+            
             String todo = request.getParameter("todo");
-            switch(todo)
+            
+            if(todo.equals("connexion")) //si demande de connexion
             {
-                case "listeRestaurants" : {
-                    ServiceMetier sm = new ServiceMetier();
-                    Action action = new ListeRestaurantsAction();
-                    action.setServiceMetier(sm);
-                    action.execute(request);
-                    
-                    MySerialiser ms = new MySerialiser();
-                    Object restaurants = request.getAttribute("restaurants");
-                    ms.printListRestaurants(out, (List<Restaurant>) restaurants);
-                    break;
+                Action action = new ConnexionAction();
+                action.setServiceMetier(sm);
+                action.execute(request);
+ 
+                Client client = (Client) request.getAttribute("client");
+                if(client != null)
+                {
+                    session.setAttribute("id", client.getId());
+                    RequestDispatcher rd = request.getRequestDispatcher("/home.html");
+                    rd.forward(request, response);
+                }
+                else
+                {
+                    ms.printConnexionFail(out);
+                }
+            }
+            else if(todo.equals("mdpOublie"))
+            {
+                Action action = new MdpOublieAction();
+                action.setServiceMetier(sm);
+                action.execute(request);
+            }
+            else if(todo.equals("inscription"))
+            {
+                Action action = new InscriptionAction();
+                action.setServiceMetier(sm);
+                action.execute(request);
+                   
+                //Client client = (Client) request.getAttribute("client");
+                //ms.printCreationClient(out, client);
+            }
+            else
+            {
+                // Verif de la connexion
+                Long sessionId = (Long) session.getAttribute("id"); 
+                
+                if(sessionId == null)
+                {
+                    //retourne vers une page de connexion
+                    this.getServletContext().getRequestDispatcher("/login.html").forward(request, response);
+                }
+                else
+                {
+                    switch(todo)
+                    {
+                        case "listeRestaurants" : 
+                        {
+                            Action action = new ListeRestaurantsAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object restaurants = request.getAttribute("restaurants");
+                            ms.printListRestaurants(out, (List<Restaurant>) restaurants);
+                            break;
+                        }
+                        case "restaurant" : 
+                        {
+                            Action action = new FicheRestaurantAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object restaurant = request.getAttribute("restaurant");
+                            ms.printFicheRestaurant(out, (Restaurant)restaurant);
+                            break;
+                        }
+                        case "modificationInfos" :
+                        {
+                            Action action = new ModifInfosAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object restaurant = request.getAttribute("restaurant");
+                            //ms.printFicheRestaurant(out, (Restaurant)restaurant);
+                            break;
+                        }
+                        case "getPlats" :
+                        {
+                            Action action = new GetPlatsAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produits = request.getAttribute("plats");
+                            ms.printPlats(out, (List<Produit>)produits);
+                            break;
+                        }
+                        case "infosCommande" :
+                        {
+                            Action action = new InfosCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produits = request.getAttribute("plats");
+                            ms.printPlats(out, (List<Produit>)produits);
+                            break;
+                        }
+                    }
                 }
             }
         }

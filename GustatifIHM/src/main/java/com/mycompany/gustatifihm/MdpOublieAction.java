@@ -5,8 +5,6 @@
  */
 package com.mycompany.gustatifihm;
 import javax.servlet.http.HttpServletRequest;
-import modele.Restaurant;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,16 +12,18 @@ import java.util.logging.Logger;
  *
  * @author tthibault
  */
-public class ListeRestaurantsAction extends Action {
+public class MdpOublieAction extends Action {
     @Override
     public void execute(HttpServletRequest request)
     {
-        List<Restaurant> restaurants = null;
-        try {
-            restaurants = this.serviceMetier.ListerRestaurants();
+        String mail;
+        
+        try 
+        {
+            mail = request.getParameter("mail");
+            this.serviceMetier.RenvoyerMotDePasse(mail);
         } catch (Throwable ex) {
-            Logger.getLogger(ListeRestaurantsAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MdpOublieAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        request.setAttribute("restaurants", restaurants);
     }
 }
