@@ -464,6 +464,22 @@ public class ServiceMetier {
     }
     
     /**
+     * Non codé initialement
+     */
+    public static Produit TrouverProduitParId(Long id) throws Throwable
+    {
+        JpaUtil.creerEntityManager();
+        ProduitDao pdao = new ProduitDao();
+        Produit produit = pdao.findById(id);
+        if(produit == null)
+        {
+            System.out.println("Produit introuvable");
+        }
+        JpaUtil.fermerEntityManager();
+        return produit;
+    }
+    
+    /**
      *
      * @param id l'id de la commande cherchée
      * @return commande la commande trouvée

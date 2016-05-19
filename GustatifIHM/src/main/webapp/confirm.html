@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Mes commandes</title>
 
@@ -19,7 +20,7 @@
     <link href="css/index.css" rel="stylesheet">
   </head>
 
-  <body class="home">
+  <body class="home" onload="chargerNomPrenom();chargerCommandes();">
     <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -30,11 +31,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="#">Bienvenue <span id="username">UserName</span></a></li>
                 <li><a href="home.html">Restaurants</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="orders.html">Mes commandes</a></li>
+                <li class="active"><a href="confirm.html">Mes commandes</a></li>
                 <li><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -48,7 +49,7 @@
         </div><br />
         <h4>Consultez ici l'historique de vos commandes, et vos commandes en cours!</h4><br />
         <div id="errorMessage" class="alert alert-warning" style="visibility:hidden">PROBLEM</div><br />
-        <div>
+        <div id="listCommandes">
             <div class="row">
                 <div class="col-md-2">
                     <div><b>No Commande</b></div>
@@ -65,60 +66,74 @@
                 <div class="col-md-2">
                     <div></div>
                 </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
-                </div>
-                <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
-                </div>
-                <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
-                </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
-                </div>
-                <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
-                </div>
-                <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
-                </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
-                </div>
-                <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
-                </div>
-                <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
-                </div>
-            </div> <!-- /row -->
+            </div>
         </div>
     </div> <!-- /container -->
 
+    <script>
+            
+            function chargerNomPrenom() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'getClientConnecte'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "" + data.prenom + " " + data.nom;
+                    $('#username').html(retourHTML);
+                })
+                .fail(function() {
+                    $('#username').html("ERR#42");
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function chargerCommandes() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'listeCommandesClient'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "";
+                    retourHTML += '<div class="row"><div class="col-md-2"><div><b>No Commande</b></div></div>';
+                    retourHTML += '<div class="col-md-3"><div><b>Restaurant</b></div></div><div class="col-md-3"><div><b>Date</b></div>';
+                    retourHTML += '</div><div class="col-md-2"><div><b>Etat</b></div></div><div class="col-md-2"><div></div></div></div>';
+                    
+                    var commandes = data.commandes;
+                    
+                    for (i = 0; i < commandes.length; i++) {
+                        retourHTML += '<div class="row"><div class="col-md-2"><div>';
+                        retourHTML += commandes[i].id;
+                        retourHTML += '</div></div><div class="col-md-3"><div>';
+                        retourHTML += commandes[i].restaurant;
+                        retourHTML += '</div></div><div class="col-md-3"><div>';
+                        retourHTML += commandes[i].dateJour;
+                        retourHTML += '</div></div><div class="col-md-2"><div>';
+                        retourHTML += commandes[i].etat;
+                        retourHTML += '</div></div><div class="col-md-2"><div><a class="btn btn-info" type="button" href="details.html?id=';
+                        retourHTML += commandes[i].id;
+                        retourHTML += '">Détails</a></div></div></div>';
+                    }
+                    $('#listCommandes').html(retourHTML);
+                })
+                .fail(function() {
+                    $.notify("Une erreur a empêché le chargment de l'historique de vos commandes.", 'error');
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+    </script>
+    
   </body>
 </html>

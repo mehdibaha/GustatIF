@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Commandes</title>
 
@@ -80,7 +81,7 @@
             <input type="text" class="form-inline" id="totalPrice" value="0€" disabled>
         </div><br />
         <div class="row">
-            <button class="btn btn-lg btn-primary" type="submit">Je commande !</button>
+            <a class="btn btn-lg btn-primary" onclick="creerCommande();" id="boutonCommande">Je commande !</a>
         </div>
     </div> <!-- /container -->
 
@@ -109,7 +110,7 @@
                     $('#infosRestaurant').html(retourHTML);
                 })
                 .fail(function() {
-                    $('#infosRestaurant').html("<h1>Erreur</h1><p class='small'>Une erreur de la Servlet a empêché le chargement du nom de ce restaurant.</p><br/>");
+                    $.notify('Une erreur a empêché le chargement du nom de ce restaurant.', 'error');
                 })
                 .always(function() {
                     //
@@ -142,14 +143,14 @@
                         retourHTML += '<input name="qty" type="number" value="0" min="0" onchange="updateLocalPrice();"></input>';
                         retourHTML += '</div></div><div class="col-md-2"> <div name="price">';
                         retourHTML += plats[i].prix;
-                        retourHTML += '</div></div></div>';
+                        retourHTML += '€</div></div></div>';
                         
                         idPlats[i] =  plats[i].id;
                     }
                     $('#listePlats').html(retourHTML);
                 })
                 .fail(function() {
-                    $('#listePlats').html("<p>Une erreur de la Servlet a empêché le chargement des plats de ce restaurant.</p>");
+                    $.notify('Une erreur a empêché le chargment des plats de ce restaurant.', 'error');
                 })
                 .always(function() {
                     //
@@ -191,6 +192,7 @@
             };
             
             function creerCommande() {
+                $('#boutonCommande').addClass('disabled');
                 
                 var allQty = document.getElementsByName("qty");
         
@@ -215,10 +217,16 @@
                     dataType: 'json'
                 })
                 .done(function(data) {
-                    
+                    if(data.retour === -1) 
+                    {
+                        $.notify("La commande n'a pas été créee.", 'error');
+                    }else
+                    {
+                        document.location.href="confirm_order.html?id="+data.retour;
+                    }
                 })
                 .fail(function() {
-                    
+                    $.notify('Erreur de la Servlet.', 'error');
                 })
                 .always(function() {
                     //

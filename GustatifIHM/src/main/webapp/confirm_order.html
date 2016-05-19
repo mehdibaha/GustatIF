@@ -20,7 +20,7 @@
     <link href="css/index.css" rel="stylesheet">
   </head>
 
-  <body class="home">
+  <body class="home" onload="chargerNomPrenom();chargerInfosCommande();">
     <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -31,7 +31,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="#">Bienvenue <span id="username">UserName</span></a></li>
                 <li><a href="home.html">Restaurants</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
@@ -48,8 +48,8 @@
             <h1>Confirmation Commande</h1>
             <p class="small">Récapitulatif de votre commande</p><br />
         </div>
-        <h3>~ Le Boeuf d'argent ~</h3><br />
-        <div>
+        <h3>~ <span id="nomRestaurant">Chargement</span> ~</h3><br />
+        <div id="zoneCommande">
             <div class="row">
                 <div class="col-md-6 text-left">
                     <div><b>Plats</b></div>
@@ -60,59 +60,134 @@
                 <div class="col-md-3">
                     <div><b>Prix</b></div>
                 </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-6 text-left">
-                    <div>Côte de boeufs et poêlée de légumes</div>
-                </div>
-                <div class="col-md-3">
-                    <div>
-                        <div>1</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div>18€</div>
-                </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-6 text-left">
-                    <div>Andouillette et gratin dauphinois</div>
-                </div>
-                <div class="col-md-3">
-                    <div>
-                        <div>1</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div>16€</div>
-                </div>
-            </div> <!-- /row -->
-            <div class="row">
-                <div class="col-md-6" style="text-align:left">
-                    <div>Andouillette et gratin dauphinois</div>
-                </div>
-                <div class="col-md-3">
-                    <div>
-                        <div>1</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div>16€</div>
-                </div>
-            </div> <!-- /row -->
+            </div> <!-- /row --><!-- /row -->
         </div>
         <div class="row">
             <label for="price" class="h3">Prix Total:</label>
-            <span class="h3">25€</span>
+            <span class="h3" id="prixTotal">- €</span>
         </div>
         <div class="row">
-            <a class="btn btn-lg btn-primary" href="#">Valider et accéder au paiement</a>
-            <a class="btn btn-lg btn-primary" href="#">Annuler la commande</a>
+            <a class="btn btn-lg btn-primary" href="#" id="boutonValider" onclick="validerCommande();">Valider et accéder au paiement</a>
+            <a class="btn btn-lg btn-primary" href="#" id="boutonAnnuler" onclick="annulerCommande();">Annuler la commande</a>
         </div><br />
         <div class="row">
             <span class="h4">Bon appetit !</span>
         </div>
     </div> <!-- /container -->
 
+    <script>
+            
+            function chargerNomPrenom() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'getClientConnecte'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "" + data.prenom + " " + data.nom;
+                    $('#username').html(retourHTML);
+                })
+                .fail(function() {
+                    $('#username').html("ERR#42");
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function chargerInfosCommande() {
+            $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'infosCommande',
+                        idCommande: location.search.slice(1).substring(3)
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    $('#nomRestaurant').html(data.commande.nomRestaurant);
+            
+                    var produits = data.commande.produits;
+                    var retourHTML = "";
+                    
+                    retourHTML += '<div class="row"><div class="col-md-6 text-left"><div><b>Plats</b></div></div>';
+                    retourHTML += '<div class="col-md-3"> <div><b>Quantité</b></div></div>';
+                    retourHTML += '<div class="col-md-3"><div><b>Prix</b></div></div></div>';
+            
+                    for (i = 0; i < produits.length; i++) {
+                        retourHTML += '<div class="row"><div class="col-md-6" style="text-align:left"><div>';
+                        retourHTML += produits[i].denomination;
+                        retourHTML += '</div></div> <div class="col-md-3"><div><div>';
+                        retourHTML += produits[i].quantite;
+                        retourHTML += '</div></div></div><div class="col-md-3"><div>';
+                        retourHTML += produits[i].prix;
+                        retourHTML += '€</div></div></div>';
+                    }
+                    $('#zoneCommande').html(retourHTML);
+                    
+                    $('#prixTotal').html(data.commande.prixTotal+"€");
+                })
+                .fail(function() {
+                    $('#nomRestaurant').html("Erreur");
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function validerCommande() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'validerCommande',
+                        idCommande: location.search.slice(1).substring(3)
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    if(data.state) 
+                    {
+                        document.location.href="confirm.html";
+                    }
+                })
+                .fail(function() {
+                    $.notify("La commande n'a pas pu être validée. Elle est sans doute déjà validée.", 'error');
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function annulerCommande() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'annulerCommande',
+                        idCommande: location.search.slice(1).substring(3)
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    if(data.state) 
+                    {
+                        document.location.href="confirm.html";
+                    }
+                })
+                .fail(function() {
+                    $.notify("La commande n'a pas pu être annulée. Elle est sans doute déjà validée.", 'error');
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+    </script>
+    
   </body>
 </html>

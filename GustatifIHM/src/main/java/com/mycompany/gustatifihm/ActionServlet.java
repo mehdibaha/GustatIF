@@ -66,15 +66,11 @@ public class ActionServlet extends HttpServlet {
                 if(client != null)
                 {
                     session.setAttribute("id", client.getId());
-                    System.out.println("notnull : "+session.getAttribute("id"));
-                    //RequestDispatcher rd = request.getRequestDispatcher("/home.html");
-                    //response.sendRedirect("/home.html");
-                    //rd.forward(request, response);
+                    ms.printState(out,true);
                 }
                 else
                 {
-                    System.out.println("null");
-                    ms.printConnexionFail(out);
+                    ms.printState(out,false);
                 }
             }
             else if(todo.equals("mdpOublie"))
@@ -164,7 +160,17 @@ public class ActionServlet extends HttpServlet {
                             action.execute(request);
 
                             //Object commande = request.getAttribute("commande");
-                            //ms.printInfosCommande(out, (Commande) commande);
+                            ms.printState(out, true);
+                            break;
+                        }
+                        case "annulerCommande" :
+                        {
+                            Action action = new AnnulerCommandeAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            //Object commande = request.getAttribute("commande");
+                            ms.printState(out, true);
                             break;
                         }
                         case "creerCommande" :
@@ -173,8 +179,8 @@ public class ActionServlet extends HttpServlet {
                             action.setServiceMetier(sm);
                             action.execute(request);
 
-                            //Object commande = request.getAttribute("commande");
-                            //ms.printInfosCommande(out, (Commande) commande);
+                            Object commande = request.getAttribute("commande");
+                            ms.printCreerCommande(out, (Commande) commande);
                             break;
                         }
                         case "listeCommandesClient" : 
