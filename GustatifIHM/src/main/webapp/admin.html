@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
+    <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
 
     <title>Gustat'IF - Interface Administrateur</title>
 
@@ -35,72 +36,114 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Interface Administrateur</h1>
-          <h3 class="sub-header">Ajouter un produit</h3>
-          <div class="table-responsive">
-            <div class="input-group">
-              <input type="text" class="form-inline" placeholder="id restaurant" id="idresto">
-              <input type="text" class="form-inline" placeholder="Nom" id="name">
-              <input type="text" class="form-inline" placeholder="Description" id="description">
-              <input type="number" placeholder="Poids 0g"></input>
-              <input type="number" placeholder="Prix 0€"></input>
-              <a class="btn btn-sm btn-primary" href="#">Ok</a>
-            </div>
-            <h3 class="sub-header">Liste des produits</h3>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Dénomination</th>
-                  <th>Description</th>
-                  <th>Prix</th>
-                  <th>Poids</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>1</th>
-                  <th>Tartelette</th>
-                  <th>Une bonne tartelette à la fraise</th>
-                  <th>5€</th>
-                  <th>80g</th>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <th>Tartelette</th>
-                  <th>Une bonne tartelette à la fraise</th>
-                  <th>5€</th>
-                  <th>80g</th>
-                </tr>
-              </tbody>
-            </table>
 
-            <nav class="text-center">
-              <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          
-          </div>
-      </div>
+<!-- DEBUT DU DIV PRINCIPAL -->
+
+<h3 class="sub-header">Ajouter un livreur</h3>
+<div class="table-responsive">
+  <div class="input-group">
+    <div class="btn-group" style="padding-right: 10px">
+      <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span data-bind="label">Type (D,V)</span> <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+          <li><a href="#">Drone</a></li>
+          <li><a href="#">Livreur</a></li>
+      </ul>
     </div>
+    <input type="text" class="form-inline" placeholder="id restaurant" id="idresto">
+    <input type="text" class="form-inline" placeholder="Nom" id="name">
+    <input type="text" class="form-inline" placeholder="Description" id="description">
+    <input type="number" placeholder="Poids 0g"></input>
+    <input type="number" placeholder="Prix 0€"></input>
+    <a class="btn btn-sm btn-primary" href="#">Ok</a>
+  </div>
+  <h3 class="sub-header">Liste des livreurs</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Dispo</th>
+        <th>ChargeMax</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Type</th>
+        <th>Vitesse</th>
+        <th>Nom</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Oui</td>
+        <td>5000g</td>
+        <td>Sample 1</td>
+        <td>Sample 1</td>
+        <td>Vélo</td>
+        <td>-</td>
+        <td>Livreur1</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Oui</td>
+        <td>5000g</td>
+        <td>Sample 1</td>
+        <td>Sample 1</td>
+        <td>Vélo</td>
+        <td>-</td>
+        <td>Livreur2</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Non</td>
+        <td>900g</td>
+        <td>Sample 1</td>
+        <td>Sample 1</td>
+        <td>Drone</td>
+        <td>30 km/h</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
 
+  <nav class="text-center">
+    <ul class="pagination">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">4</a></li>
+      <li class="page-item"><a class="page-link" href="#">5</a></li>
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- FIN DU DIV PRINCIPAL -->
+          
+    </div>
+  </div>
+</div>
+
+    <script>
+       $( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
+          var $target = $( event.currentTarget );
+          $target.closest( '.btn-group' )
+             .find( '[data-bind="label"]' ).text( $target.text() )
+                .end()
+             .children( '.dropdown-toggle' ).dropdown( 'toggle' ) ;
+
+          return false;
+       });
+    </script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

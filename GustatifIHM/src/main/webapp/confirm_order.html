@@ -9,8 +9,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
-    <title>Gustat'IF - Mes commandes</title>
+    <title>Gustat'IF - Confirmation Commande</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -44,79 +45,72 @@
 
     <div class="container page-header">
         <div>
-            <h1>Mes commandes</h1>
-        </div><br />
-        <h4>Consultez ici l'historique de vos commandes, et vos commandes en cours!</h4><br />
-        <div id="errorMessage" class="alert alert-warning" style="visibility:hidden">PROBLEM</div><br />
+            <h1>Confirmation Commande</h1>
+            <p class="small">Récapitulatif de votre commande</p><br />
+        </div>
+        <h3>~ Le Boeuf d'argent ~</h3><br />
         <div>
             <div class="row">
-                <div class="col-md-2">
-                    <div><b>No Commande</b></div>
+                <div class="col-md-6 text-left">
+                    <div><b>Plats</b></div>
                 </div>
                 <div class="col-md-3">
-                    <div><b>Restaurant</b></div>
+                    <div><b>Quantité</b></div>
                 </div>
                 <div class="col-md-3">
-                    <div><b>Date</b></div>
-                </div>
-                <div class="col-md-2">
-                    <div><b>Etat</b></div>
-                </div>
-                <div class="col-md-2">
-                    <div></div>
+                    <div><b>Prix</b></div>
                 </div>
             </div> <!-- /row -->
             <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
+                <div class="col-md-6 text-left">
+                    <div>Côte de boeufs et poêlée de légumes</div>
                 </div>
                 <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
+                    <div>
+                        <div>1</div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
+                    <div>18€</div>
                 </div>
             </div> <!-- /row -->
             <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
+                <div class="col-md-6 text-left">
+                    <div>Andouillette et gratin dauphinois</div>
                 </div>
                 <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
+                    <div>
+                        <div>1</div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
+                    <div>16€</div>
                 </div>
             </div> <!-- /row -->
             <div class="row">
-                <div class="col-md-2">
-                    <div>122258</div>
+                <div class="col-md-6" style="text-align:left">
+                    <div>Andouillette et gratin dauphinois</div>
                 </div>
                 <div class="col-md-3">
-                    <div>Le Boeuf d'argent</div>
+                    <div>
+                        <div>1</div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <div>07/03/2016</div>
-                </div>
-                <div class="col-md-2">
-                    <div>En cours</div>
-                </div>
-                <div class="col-md-2">
-                    <div><button class="btn btn-info" type="button">Détails</button></div>
+                    <div>16€</div>
                 </div>
             </div> <!-- /row -->
+        </div>
+        <div class="row">
+            <label for="price" class="h3">Prix Total:</label>
+            <span class="h3">25€</span>
+        </div>
+        <div class="row">
+            <a class="btn btn-lg btn-primary" href="#">Valider et accéder au paiement</a>
+            <a class="btn btn-lg btn-primary" href="#">Annuler la commande</a>
+        </div><br />
+        <div class="row">
+            <span class="h4">Bon appetit !</span>
         </div>
     </div> <!-- /container -->
 

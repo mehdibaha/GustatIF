@@ -8,6 +8,8 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Inscription</title>
 
@@ -21,11 +23,10 @@
   <body>
 
     <div class="container">
-
       <form class="form-signin">
         <div class="page-header">
             <h1>Inscription</h1>
-            <p>Veuillez remplir les champs suivants afin de fournir vos informations personnelles</p><br />
+            <p>Veuillez remplir les champs suivants afin de fournir vos informations personnelles</p>
         </div>
         <label for="inputNom" class="sr-only">Nom</label>
         <input type="text" id="inputNom" class="form-control" placeholder="Nom" required autofocus><br />
@@ -41,14 +42,44 @@
         <input type="password" id="inputConfirmMdp" class="form-control" placeholder="Confirmer mot de passe" required>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="conditions">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
+                <input id="inputConditions" type="checkbox">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
             </label>
             <label>
-                <input type="checkbox" value="geo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
+                <input id="inputGeo" type="checkbox">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
             </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
+        <a class="btn btn-lg btn-primary btn-block" onclick="inscription()">Inscription</a>
       </form>
+
+        <script>
+            function inscription() {
+            $.ajax({
+                url: './ActionServlet',
+                type: 'POST',
+                data: {
+                    todo: 'inscription',
+                    nom: document.getElementById('inputNom').value,
+                    prenom: document.getElementById('inputPrenom').value,
+                    adresse: document.getElementById('inputAdresse').value,
+                    mail: document.getElementById('inputEmail').value,
+                    mdp: document.getElementById('inputMdp').value,
+                    mdp2: document.getElementById('inputConfirmMdp').value,
+                    conditions: document.getElementById('inputConditions').value,
+                    geoloc: document.getElementById('inputGeo').value,
+                },
+                dataType: 'json'
+            })
+            .done(function(data) {
+                $.notify('Connexion réussie.', 'success');
+            })
+            .fail(function() {
+                $.notify('ERREUR de la servlet, connexion impossible', 'error');
+            })
+            .always(function() {
+                //
+            });
+            };
+        </script>
 
     </div> <!-- /container -->
 
