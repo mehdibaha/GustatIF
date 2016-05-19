@@ -154,8 +154,6 @@
                               </thead>
                               <tbody>`;
 
-          $('#all').html(retourHTML);
-
           retourHTML += `</tbody>
               </table>
               <h5>Prix total : <span id="prix">25</span>€</h5>`;
@@ -184,7 +182,7 @@
           $('#id_livreur').html(commande.nomLivreur);
         })
         .fail(function() {
-            $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
+            $.notify('Une erreur a empêché le chargement de la commande.', 'error');
         })
         .always(function() {
             //
@@ -216,7 +214,7 @@
             livreurs.forEach(function(livreur) {
               myLatlng = new google.maps.LatLng(livreur.latitude, livreur.longitude);
               marker = new google.maps.Marker({
-                  position: myLatlng,
+                  position:myLatlng,
                   title:livreur.nom
               });
               marker.setMap(map);
@@ -225,7 +223,7 @@
             $('#all').html(retourHTML);
         })
         .fail(function() {
-            $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
+            $.notify('Une erreur a empêché le chargement de la carte.', 'error');
         })
         .always(function() {
             //
