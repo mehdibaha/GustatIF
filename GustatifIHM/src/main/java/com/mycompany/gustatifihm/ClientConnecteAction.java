@@ -16,19 +16,18 @@ import modele.Commande;
  *
  * @author tthibault
  */
-public class ListCommandesClientAction extends Action {
+public class ClientConnecteAction extends Action {
     @Override
     public void execute(HttpServletRequest request)
     {
-        List<Commande> commandes = null;
         long idClient = (Long) request.getSession(true).getAttribute("id");
+        Client client = null;
         
         try {
-            Client client = serviceMetier.TrouverClientParId(idClient);
-            commandes = this.serviceMetier.ListerCommandesClient(client);
+            client = serviceMetier.TrouverClientParId(idClient);
         } catch (Throwable ex) {
             Logger.getLogger(ListeRestaurantsAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        request.setAttribute("commandes", commandes);
+        request.setAttribute("client", client);
     }
 }

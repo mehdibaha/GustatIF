@@ -81,7 +81,7 @@
             <input type="text" class="form-inline" id="totalPrice" value="0€" disabled>
         </div><br />
         <div class="row">
-            <button class="btn btn-lg btn-primary" type="submit">Je commande !</button>
+            <a class="btn btn-lg btn-primary" onclick="creerCommande();" id="boutonCommande">Je commande !</a>
         </div>
     </div> <!-- /container -->
 
@@ -143,7 +143,7 @@
                         retourHTML += '<input name="qty" type="number" value="0" min="0" onchange="updateLocalPrice();"></input>';
                         retourHTML += '</div></div><div class="col-md-2"> <div name="price">';
                         retourHTML += plats[i].prix;
-                        retourHTML += '</div></div></div>';
+                        retourHTML += '€</div></div></div>';
                         
                         idPlats[i] =  plats[i].id;
                     }
@@ -192,6 +192,7 @@
             };
             
             function creerCommande() {
+                $('#boutonCommande').addClass('disabled');
                 
                 var allQty = document.getElementsByName("qty");
         
@@ -216,10 +217,16 @@
                     dataType: 'json'
                 })
                 .done(function(data) {
-                    
+                    if(data.retour === -1) 
+                    {
+                        $.notify("La commande n'a pas été créee.", 'error');
+                    }else
+                    {
+                        document.location.href="confirm_order.html?id="+data.retour;
+                    }
                 })
                 .fail(function() {
-                    
+                    $.notify('Erreur de la Servlet.', 'error');
                 })
                 .always(function() {
                     //

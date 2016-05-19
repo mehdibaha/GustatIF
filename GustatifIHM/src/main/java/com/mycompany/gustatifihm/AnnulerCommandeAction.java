@@ -7,25 +7,26 @@ package com.mycompany.gustatifihm;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modele.Client;
 import modele.Commande;
 
 /**
  *
  * @author tthibault
  */
-public class InfosCommandeAction extends Action {
+public class AnnulerCommandeAction extends Action {
     @Override
     public void execute(HttpServletRequest request)
     {
-        Commande commande = null;
-        long idCommande;
-        try {
-            idCommande = Long.parseLong(request.getParameter("idCommande"));
-            commande = this.serviceMetier.TrouverCommandeParId(idCommande);
+        long idCommande = Long.parseLong(request.getParameter("idCommande"));
+        
+        try 
+        {
+            Commande commande = serviceMetier.TrouverCommandeParId(idCommande);
+            this.serviceMetier.AnnulerCommande(commande);
+            
         } catch (Throwable ex) {
-            Logger.getLogger(FicheRestaurantAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ModifInfosAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        request.setAttribute("commande", commande);
-        //System.out.println(commande);
     }
 }

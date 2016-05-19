@@ -62,6 +62,9 @@
                     if(!state) 
                     {
                         $.notify('Email et/ou mot de passe incorrects.', 'warn');
+                    }else
+                    {
+                        document.location.href="home.html";
                     }
                 })
                 .fail(function() {

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 import modele.Client;
 import modele.Commande;
@@ -14,6 +15,7 @@ import modele.Produit;
 import modele.ProduitCommande;
 import modele.Restaurant;
 import modele.Velo;
+import service.ServiceMetier;
 
 public class MySerialiser {
     public void printListRestaurants(PrintWriter out, List<Restaurant> restaurants)
@@ -28,6 +30,7 @@ public class MySerialiser {
             jsonRestaurant.addProperty("id", r.getId());
             jsonRestaurant.addProperty("denomination", r.getDenomination());
             jsonRestaurant.addProperty("description", r.getDescription());
+            jsonRestaurant.addProperty("adresse", r.getAdresse());
             jsonRestaurant.addProperty("latitude", r.getLatitude());
             jsonRestaurant.addProperty("longitude", r.getLongitude());
             
@@ -53,13 +56,30 @@ public class MySerialiser {
         out.println(json);
     }
     
-    public void printConnexionFail(PrintWriter out)
+    public void printState(PrintWriter out, boolean state)
     {
-        JsonObject jsonFail = new JsonObject();
+        JsonObject jsonState = new JsonObject();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
-        jsonFail.addProperty("state", false);
-        String json = gson.toJson(jsonFail);      
+        jsonState.addProperty("state", state);
+        String json = gson.toJson(jsonState);      
+        out.println(json);
+    }
+    
+    public void printCreerCommande(PrintWriter out, Commande commande)
+    {
+        JsonObject jsonState = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        if(commande == null)
+        {
+            jsonState.addProperty("retour", -1);
+        }
+        else
+        {
+            jsonState.addProperty("retour", commande.getId());
+        }
+        String json = gson.toJson(jsonState);      
         out.println(json);
     }
     
@@ -99,13 +119,45 @@ public class MySerialiser {
     
     public void printInfosCommande(PrintWriter out, Commande commande)
     {
+        //System.out.print(commande);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
         JsonObject jsonCommande = new JsonObject();
 
         jsonCommande.addProperty("id", commande.getId());
         jsonCommande.addProperty("dateDebut", commande.getDateDebut().toString());
-        jsonCommande.addProperty("dateFin", commande.getDateFin().toString());
+        
+        String etat = commande.getStatus().toString();
+        if(etat == "ENCOURS")
+        {
+            jsonCommande.addProperty("etat", "En cours");   
+        }
+        else if(etat == "ANNULEE")
+        {
+            jsonCommande.addProperty("etat", "Annulée");   
+        } 
+        else if(etat == "VALIDATION")
+        {
+            jsonCommande.addProperty("etat", "Non Confirmée");   
+        }
+        else if(etat == "LIVREE")
+        {
+          jsonCommande.addProperty("etat", "Livrée");   
+        }
+        
+        Date dateFin = commande.getDateFin();
+        if(dateFin != null)
+        {
+            jsonCommande.addProperty("dateFin", dateFin.toString());
+        }
+        else
+        {
+            jsonCommande.addProperty("dateFin", "null");
+        }
+        
+        jsonCommande.addProperty("nomRestaurant", commande.getRestaurant().getDenomination());
+        jsonCommande.addProperty("nomClient", commande.getClient().getPrenom()+" "+commande.getClient().getNom());
+        jsonCommande.addProperty("nomLivreur", commande.getLivreur().getId());
+        jsonCommande.addProperty("prixTotal", ServiceMetier.CalculerPrixTotal(commande));
         List<ProduitCommande> produits = commande.getProduits();
         
         JsonArray jsonListeProduits = new JsonArray();
@@ -129,6 +181,7 @@ public class MySerialiser {
         JsonObject container = new JsonObject();
         container.add("commande", jsonCommande);
         String json = gson.toJson(container);
+        //System.out.println(json);
         out.println(json);
     }
     
@@ -144,8 +197,42 @@ public class MySerialiser {
             jsonCommande.addProperty("id", c.getId());
             jsonCommande.addProperty("restaurant", c.getRestaurant().getDenomination());
             jsonCommande.addProperty("dateDebut", c.getDateDebut().toString());
-            jsonCommande.addProperty("dateFin", c.getDateFin().toString());
-            jsonCommande.addProperty("etat", c.getStatus().toString());
+            
+            String zeroMonth ="";
+            if(c.getDateDebut().getMonth() < 10)
+                zeroMonth = "0";
+                
+            jsonCommande.addProperty("dateJour", c.getDateDebut().getDate()+"/"+zeroMonth+c.getDateDebut().getMonth()+"/20"+(c.getDateDebut().getYear()-100));
+            
+            Date dateFin = c.getDateFin();
+            if(dateFin != null)
+            {
+                jsonCommande.addProperty("dateFin", dateFin.toString());
+            }
+            else
+            {
+                jsonCommande.addProperty("dateFin", "null");
+            }
+            
+            String etat = c.getStatus().toString();
+            
+            if(etat == "ENCOURS")
+            {
+                jsonCommande.addProperty("etat", "En cours");   
+            }
+            else if(etat == "ANNULEE")
+            {
+                jsonCommande.addProperty("etat", "Annulée");   
+            } 
+            else if(etat == "VALIDATION")
+            {
+                jsonCommande.addProperty("etat", "Non Confirmée");   
+            }
+            else if(etat == "LIVREE")
+            {
+                jsonCommande.addProperty("etat", "Livrée");   
+            }
+            
             jsonCommande.addProperty("latitude", c.getClient().getLatitude());
             jsonCommande.addProperty("longitude", c.getClient().getLongitude());
             
@@ -218,6 +305,18 @@ public class MySerialiser {
         JsonObject container = new JsonObject();
         container.add("livreurs", jsonListe);
         String json = gson.toJson(container);
+        out.println(json);
+    }
+    
+    public void printInfosClient(PrintWriter out, Client c)
+    {
+        JsonObject jsonClient = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        jsonClient.addProperty("nom", c.getNom());
+        jsonClient.addProperty("prenom", c.getPrenom());
+        
+        String json = gson.toJson(jsonClient);      
         out.println(json);
     }
 }
