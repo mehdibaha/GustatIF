@@ -33,15 +33,45 @@
             <div class="form-signin-heading">
             Déjà membre? Connectez-vous et profitez d'un autre bon repas!</div>
         </div>
+        <div id="errorMessage">
+        </div>
         <label for="inputEmail" class="sr-only">Adresse mail</label>
         <input type="email" id="inputEmail" class="form-control" placeholder="Adresse email" required autofocus>
         <label for="inputPassword" class="sr-only">Mot de passe</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
-        <a class="btn btn-lg btn-primary btn-block" href="#">Se connecter</a>
+        <a class="btn btn-lg btn-primary btn-block" onclick="connexion()">Se connecter</a>
         <a href="password.html">Mot de passe oublié ?</a>
       </form>
 
     </div> <!-- /container -->
-
+    <script>
+        function connexion() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'connexion',
+                        mail : document.getElementById('inputEmail').value,
+                        pass : document.getElementById('inputPassword').value
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var result = data;
+                    var state = result.state;
+                    if(!state) 
+                    {
+                        var contenuHtml = '<p>Email ou de mot de passe incorrects</p>';
+                        $('#errorMessage').html(contenuHtml);
+                    }
+                })
+                .fail(function() {
+                    $('#errorMessage').html('<p>ERREUR de la servlet, connexion impossible</p>');
+                })
+                .always(function() {
+                    //
+                });
+            };
+    </script>
   </body>
 </html>
