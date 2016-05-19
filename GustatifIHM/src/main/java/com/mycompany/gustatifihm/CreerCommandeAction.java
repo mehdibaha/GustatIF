@@ -7,7 +7,9 @@ package com.mycompany.gustatifihm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -23,18 +25,28 @@ import modele.Restaurant;
  *
  * @author tthibault
  */
+
 public class CreerCommandeAction extends Action {
     @Override
     public void execute(HttpServletRequest request)
     {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
-        long idCommande = Long.parseLong(request.getParameter("idCommande"));
         long idRestaurant = Long.parseLong(request.getParameter("idRestaurant"));
+        String produits = request.getParameter("produitsCom");
+        System.out.println(produits);
+        JsonArray entries = (JsonArray) new JsonParser().parse(produits);
+        System.out.println(entries);
         
-        ProduitCommande[] produits = gson.fromJson(request.getParameter("produits"), ProduitCommande[].class);
-        List<ProduitCommande> listProduits = Arrays.asList(produits);
+        for (JsonElement entry : entries)
+        {
+            long id = ((JsonObject) entry).get("id").getAsLong();
+            int quantite = ((JsonObject) entry).get("quantitee").getAsInt();
+            
+            System.out.println("-> "+id+" ("+quantite+")");
+        }
         
+        /*
         long idClient = (Long) request.getSession(true).getAttribute("id");
         
         try 
@@ -46,6 +58,6 @@ public class CreerCommandeAction extends Action {
             
         } catch (Throwable ex) {
             Logger.getLogger(ModifInfosAction.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 }

@@ -19,8 +19,11 @@ import modele.Client;
 import modele.Commande;
 import modele.Livreur;
 import modele.Produit;
+import modele.ProduitCommande;
 import modele.Restaurant;
 import service.ServiceMetier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  *
@@ -59,14 +62,18 @@ public class ActionServlet extends HttpServlet {
                 action.execute(request);
  
                 Client client = (Client) request.getAttribute("client");
+                System.out.println(client);
                 if(client != null)
                 {
                     session.setAttribute("id", client.getId());
-                    RequestDispatcher rd = request.getRequestDispatcher("/home.html");
-                    rd.forward(request, response);
+                    System.out.println("notnull : "+session.getAttribute("id"));
+                    //RequestDispatcher rd = request.getRequestDispatcher("/home.html");
+                    //response.sendRedirect("/home.html");
+                    //rd.forward(request, response);
                 }
                 else
                 {
+                    System.out.println("null");
                     ms.printConnexionFail(out);
                 }
             }
@@ -88,7 +95,8 @@ public class ActionServlet extends HttpServlet {
             else
             {
                 // Verif de la connexion
-                Long sessionId = (Long) session.getAttribute("id"); 
+                Long sessionId = (Long) session.getAttribute("id");
+                System.out.println("TestSession on : "+todo+" : "+sessionId);
                 
                 if(sessionId == null)
                 {
@@ -218,6 +226,31 @@ public class ActionServlet extends HttpServlet {
                             Object livreurs = request.getAttribute("livreurs");
                             ms.printListLivreurs(out, (List<Livreur>) livreurs);
                             break;
+                        }
+                        case "getClientConnecte" :
+                         {
+                            System.out.println("GetClientco : "+sessionId);
+                            Action action = new ClientConnecteAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object client = request.getAttribute("client");
+                            ms.printInfosClient(out, (Client) client);
+                            break;
+                        }
+                        case "test" :
+                        {
+                            Produit p = new Produit("Medhi", "Un mec du forum", 0f, 1000f);
+                            ProduitCommande pc1 = new ProduitCommande(1, p);
+                            ProduitCommande pc2 = new ProduitCommande(2, p);
+                            ProduitCommande[] tabCommandes = {pc1,pc2};
+                            
+                            Gson gson = new Gson();
+                            out.print(gson.toJson(tabCommandes));
+                        }
+                        case "test2" :
+                        {
+                            out.print(sessionId);
                         }
                     }
                 }

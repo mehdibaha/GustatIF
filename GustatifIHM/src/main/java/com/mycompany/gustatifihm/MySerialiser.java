@@ -28,6 +28,7 @@ public class MySerialiser {
             jsonRestaurant.addProperty("id", r.getId());
             jsonRestaurant.addProperty("denomination", r.getDenomination());
             jsonRestaurant.addProperty("description", r.getDescription());
+            jsonRestaurant.addProperty("adresse", r.getAdresse());
             jsonRestaurant.addProperty("latitude", r.getLatitude());
             jsonRestaurant.addProperty("longitude", r.getLongitude());
             
@@ -218,6 +219,18 @@ public class MySerialiser {
         JsonObject container = new JsonObject();
         container.add("livreurs", jsonListe);
         String json = gson.toJson(container);
+        out.println(json);
+    }
+    
+    public void printInfosClient(PrintWriter out, Client c)
+    {
+        JsonObject jsonClient = new JsonObject();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        jsonClient.addProperty("nom", c.getNom());
+        jsonClient.addProperty("prenom", c.getPrenom());
+        
+        String json = gson.toJson(jsonClient);      
         out.println(json);
     }
 }
