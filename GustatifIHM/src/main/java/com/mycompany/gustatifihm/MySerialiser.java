@@ -126,6 +126,11 @@ public class MySerialiser {
         jsonCommande.addProperty("id", commande.getId());
         jsonCommande.addProperty("dateDebut", commande.getDateDebut().toString());
         
+        String zeroMonth ="";
+        if(commande.getDateDebut().getMonth() < 10)
+            zeroMonth = "0";
+        jsonCommande.addProperty("dateJour", commande.getDateDebut().getDate()+"/"+zeroMonth+commande.getDateDebut().getMonth()+"/20"+(commande.getDateDebut().getYear()-100));
+        
         String etat = commande.getStatus().toString();
         if(etat == "ENCOURS")
         {
@@ -148,16 +153,28 @@ public class MySerialiser {
         if(dateFin != null)
         {
             jsonCommande.addProperty("dateFin", dateFin.toString());
+            
+            String zeroMin ="";
+            if(commande.getDateFin().getMinutes() < 10)
+                zeroMin = "0";
+            jsonCommande.addProperty("heureLivraison", commande.getDateFin().getHours()+"h"+zeroMin+commande.getDateFin().getMinutes());
         }
         else
         {
             jsonCommande.addProperty("dateFin", "null");
+            jsonCommande.addProperty("heureLivraison", "Non Livré");
         }
         
         jsonCommande.addProperty("nomRestaurant", commande.getRestaurant().getDenomination());
         jsonCommande.addProperty("nomClient", commande.getClient().getPrenom()+" "+commande.getClient().getNom());
         jsonCommande.addProperty("nomLivreur", commande.getLivreur().getId());
         jsonCommande.addProperty("prixTotal", ServiceMetier.CalculerPrixTotal(commande));
+        
+        String zeroMin ="";
+        if(commande.getDateDebut().getMinutes() < 10)
+                zeroMin = "0";
+        
+        jsonCommande.addProperty("heureCommande", commande.getDateDebut().getHours()+"h"+zeroMin+commande.getDateDebut().getMinutes());
         List<ProduitCommande> produits = commande.getProduits();
         
         JsonArray jsonListeProduits = new JsonArray();
