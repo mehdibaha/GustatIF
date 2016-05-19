@@ -8,6 +8,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="//code.jquery.com/jquery-1.12.1.min.js"></script>
 
     <title>Gustat'IF - Espace client</title>
 
@@ -18,7 +19,7 @@
     <link href="css/index.css" rel="stylesheet">
   </head>
 
-  <body class="home">
+  <body class="home" onload="chargerRestaurants();chargerNomPrenom();">
     <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -29,11 +30,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li><a href="#">Bienvenue UserName</a></li>
+                  <li><a href="#">Bienvenue <span id="username">UserName</span></a></li>
                 <li class="active"><a href="home.html">Restaurants</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="orders.html">Mes commandes</a></li>
+                <li><a href="confirm.html">Mes commandes</a></li>
                 <li><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -45,31 +46,68 @@
             <h1>Votre espace client</h1>
         </div><br />
         <h4>Une petite faim? Faites votre choix parmi nos délicieux restaurants partenaires!</h4><br />
-        <div class="row">
-            <div class="col-md-2">
-                <div class="row"><b>Pâturage et potager</b></div>
-                <div class="small row">8 place Saint-Vincent Lyon 1er</div>
-            </div>
-            <div class="col-md-7">
-                <p>Un cadre élégant avec murs en pierre, nappes immaculées et lustres pour une cuisine inventive et raffinée.</p>
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-lg btn-primary" type="submit">Voir les plats</button>
-            </div>
-        </div> <!-- /container -->
-
-        <div class="row">
-            <div class="col-md-2">
-                <div class="row"><b>Pâturage et potager</b></div>
-                <div class="small row">8 place Saint-Vincent Lyon 1er</div>
-            </div>
-            <div class="col-md-7">
-                <p>Un cadre élégant avec murs en pierre, nappes immaculées et lustres pour une cuisine inventive et raffinée.</p>
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-lg btn-primary" type="submit">Voir les plats</button>
-            </div>
-        </div> <!-- /container -->
+        
+        <div id="retourRestaurants">Chargement des restaurants disponibles ...</div>
+        
+        <script>
+            function chargerRestaurants() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'listeRestaurants'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var result = data;
+                    var restaurants = data.restaurants;
+                    var retourHTML = "";
+            
+                    for (i = 0; i < restaurants.length; i++) {
+                        retourHTML += '<div class="row"><div class="col-md-2"><div class="row"><b>';
+                        retourHTML += restaurants[i].denomination;
+                        retourHTML += '</b></div><div class="small row">';
+                        retourHTML += restaurants[i].adresse;
+                        retourHTML += '</div></div><div class="col-md-7"><p>';
+                        retourHTML += restaurants[i].description;
+                        retourHTML += '</p></div><div class="col-md-3">';
+                        retourHTML += '<a class="btn btn-lg btn-primary" href="orders.html?id='
+                        retourHTML += restaurants[i].id;
+                        retourHTML += '">Voir les plats</a>';
+                        retourHTML += '</div></div>';
+                    }
+                    $('#retourRestaurants').html(retourHTML);
+                })
+                .fail(function() {
+                    $('#retourRestaurants').html("<p>ERREUR : La Servlet a rencontré une erreur. L'action demandée a échouée</p>");
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function chargerNomPrenom() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'getClientConnecte'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "" + data.prenom + " " + data.nom;
+                    $('#username').html(retourHTML);
+                })
+                .fail(function() {
+                    $('#username').html("ERR#42");
+                })
+                .always(function() {
+                    //
+                });
+            };
+    </script>
 
   </body>
 </html>
