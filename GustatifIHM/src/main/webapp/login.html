@@ -61,12 +61,11 @@
                     var state = result.state;
                     if(!state) 
                     {
-                        var contenuHtml = '<p>Email ou de mot de passe incorrects</p>';
-                        $('#errorMessage').html(contenuHtml);
+                        $.notify('Email et/ou mot de passe incorrects.', 'warn');
                     }
                 })
                 .fail(function() {
-                    $('#errorMessage').html('<p>ERREUR de la servlet, connexion impossible</p>');
+                    $.notify('La Servlet a rencontré une erreur. Connexion impossible', 'error');
                 })
                 .always(function() {
                     //

@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Espace client</title>
 
@@ -80,7 +81,7 @@
                     $('#retourRestaurants').html(retourHTML);
                 })
                 .fail(function() {
-                    $('#retourRestaurants').html("<p>ERREUR : La Servlet a rencontré une erreur. L'action demandée a échouée</p>");
+                    $.notify('La Servlet a rencontré une erreur.', 'error');
                 })
                 .always(function() {
                     //

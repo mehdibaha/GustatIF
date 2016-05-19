@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Commandes</title>
 
@@ -109,7 +110,7 @@
                     $('#infosRestaurant').html(retourHTML);
                 })
                 .fail(function() {
-                    $('#infosRestaurant').html("<h1>Erreur</h1><p class='small'>Une erreur de la Servlet a empêché le chargement du nom de ce restaurant.</p><br/>");
+                    $.notify('Une erreur a empêché le chargement du nom de ce restaurant.', 'error');
                 })
                 .always(function() {
                     //
@@ -149,7 +150,7 @@
                     $('#listePlats').html(retourHTML);
                 })
                 .fail(function() {
-                    $('#listePlats').html("<p>Une erreur de la Servlet a empêché le chargement des plats de ce restaurant.</p>");
+                    $.notify('Une erreur a empêché le chargment des plats de ce restaurant.', 'error');
                 })
                 .always(function() {
                     //
