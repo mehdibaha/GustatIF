@@ -44,8 +44,9 @@
 <p>Date début : <span id="date_debut"></span></p>
 <p>Date fin : <span id="date_fin"></span></p>
 <p>Statut : <span id="status"></span></p>
-<p>Nom Client : <span id="id_client"></span></p>
-<p>Nom Restaurant : <span id="id_restaurant"></span></p>
+
+<p>Nom Client : <span id="nom_client"></span></p>
+<p>Nom Restaurant : <span id="nom_restaurant"></span></p>
 <p>Id Livreur : <span id="id_livreur"></span></p>
 <div class="table-responsive">
   <h3 class="sub-header">Liste des produits</h2>
@@ -58,6 +59,7 @@
       </tr>
     </thead>
     <tbody>
+
       <tr>
         <td>1</td>
         <td>Hugo</td>
@@ -85,6 +87,7 @@
       </tr>
     </tbody>
   </table>
+  <h5>Prix total : <span id="prix">25</span>€</h5>
 </div>
 
   <nav class="text-center">
@@ -128,14 +131,57 @@
             dataType: 'json'
         })
         .done(function(data) {
-            var result = data;
-            var commande = data.commande;
-            var retourHTML = "";
-            retourHTML += `<h3 class="sub-header">Carte Localisation</h2>
-                            <div id="map">
-                            </div>`;
+          var result = data;
+          var commande = data.commande;
+          var retourHTML = "";
+          retourHTML += `<h3 class="sub-header">Référence Commande : <span id="idCommande">1</span></h2>
+                          <p>Date début : <span id="date_debut"></span></p>
+                          <p>Date fin : <span id="date_fin"></span></p>
+                          <p>Statut : <span id="status"></span></p>
 
-            $('#all').html(retourHTML);
+                          <p>Nom Client : <span id="nom_client"></span></p>
+                          <p>Nom Restaurant : <span id="nom_restaurant"></span></p>
+                          <p>Id Livreur : <span id="id_livreur"></span></p>
+                          <div class="table-responsive">
+                            <h3 class="sub-header">Liste des produits</h2>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id produit</th>
+                                  <th>Quantité</th>
+                                  <th>Prix unitaire</th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+          $('#all').html(retourHTML);
+
+          retourHTML += `</tbody>
+              </table>
+              <h5>Prix total : <span id="prix">25</span>€</h5>`;
+
+          commande.produits.forEach(function(produit) {
+          ligne='<tr>';
+            ligne+='<td>';
+              ligne+=produit.id;
+            ligne+='</td>';
+            ligne+='<td>';
+              ligne+=produit.quantite;
+            ligne+='</td>';
+            ligne+='<td>';
+              ligne+=produit.prix;
+            ligne+='</td>';
+          ligne+='</tr>';
+          retourHTML += ligne;
+          });
+
+          $('#all').html(retourHTML);
+          $('#prix').html(commande.prixTotal);
+          $('#date_debut').html(commande.dateDebut);
+          $('#date_fin').html(commande.dateFin);
+          $('#nom_client').html(commande.nomClient);
+          $('#nom_restaurant').html(commande.nomRestaurant);
+          $('#id_livreur').html(commande.nomLivreur);
         })
         .fail(function() {
             $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
