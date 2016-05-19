@@ -38,70 +38,54 @@
           <h1 class="page-header">Interface Administrateur</h1>
 
 <!-- DEBUT DU DIV PRINCIPAL -->
+<div id="all">
+<h3 class="sub-header">Référence Commande : <span id="idCommande">1</span></h2>
 
-<h3 class="sub-header">Ajouter un livreur</h3>
+<p>Date début : <span id="date_debut"></span></p>
+<p>Date fin : <span id="date_fin"></span></p>
+<p>Statut : <span id="status"></span></p>
+<p>Nom Client : <span id="id_client"></span></p>
+<p>Nom Restaurant : <span id="id_restaurant"></span></p>
+<p>Id Livreur : <span id="id_livreur"></span></p>
 <div class="table-responsive">
-  <div class="input-group">
-    <div class="btn-group" style="padding-right: 10px">
-      <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span data-bind="label">Type (D,V)</span> <span class="caret"></span></button>
-      <ul class="dropdown-menu">
-          <li><a href="#">Drone</a></li>
-          <li><a href="#">Livreur</a></li>
-      </ul>
-    </div>
-    <input type="number" placeholder="Charge Max (g)"></input>
-    <input type="text" class="form-inline" placeholder="Adresse" id="adresse">
-    <input type="number" placeholder="Vitesse 0km/h"></input>
-    <input type="text" class="form-inline" placeholder="Nom" id="nom">
-    <a class="btn btn-sm btn-primary" href="#">Ok</a>
-  </div>
-  <h3 class="sub-header">Liste des livreurs</h3>
+  <h3 class="sub-header">Liste des produits</h2>
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Id</th>
-        <th>Dispo</th>
-        <th>ChargeMax</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th>Type</th>
-        <th>Vitesse</th>
-        <th>Nom</th>
+        <th>Id produit</th>
+        <th>Quantité</th>
+        <th>Prix unitaire</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>1</td>
-        <td>Oui</td>
-        <td>5000g</td>
-        <td>Sample 1</td>
-        <td>Sample 1</td>
-        <td>Vélo</td>
-        <td>-</td>
-        <td>Livreur1</td>
+        <td>Hugo</td>
+        <td>David-Boyet</td>
       </tr>
       <tr>
-        <td>2</td>
-        <td>Oui</td>
-        <td>5000g</td>
-        <td>Sample 1</td>
-        <td>Sample 1</td>
-        <td>Vélo</td>
-        <td>-</td>
-        <td>Livreur2</td>
+        <td>1</td>
+        <td>Hugo</td>
+        <td>David-Boyet</td>
       </tr>
       <tr>
-        <td>3</td>
-        <td>Non</td>
-        <td>900g</td>
-        <td>Sample 1</td>
-        <td>Sample 1</td>
-        <td>Drone</td>
-        <td>30 km/h</td>
-        <td>-</td>
+        <td>1</td>
+        <td>Hugo</td>
+        <td>David-Boyet</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Hugo</td>
+        <td>David-Boyet</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Hugo</td>
+        <td>David-Boyet</td>
       </tr>
     </tbody>
   </table>
+</div>
 
   <nav class="text-center">
     <ul class="pagination">
@@ -131,6 +115,479 @@
     </div>
   </div>
 </div>
+
+<script>
+    function chargerCommande(id) {
+      $.ajax({
+            url: './ActionServlet',
+            type: 'GET',
+            data: {
+                todo: 'infosCommande',
+                idCommande: id
+            },
+            dataType: 'json'
+        })
+        .done(function(data) {
+            var result = data;
+            var commande = data.commande;
+            var retourHTML = "";
+            retourHTML += `<h3 class="sub-header">Carte Localisation</h2>
+                            <div id="map">
+                            </div>`;
+
+            $('#all').html(retourHTML);
+        })
+        .fail(function() {
+            $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
+        })
+        .always(function() {
+            //
+        });
+    };
+
+    function chargerCarte() {
+      $.ajax({
+            url: './ActionServlet',
+            type: 'GET',
+            data: {
+                todo: 'listeLivreurs'
+            },
+            dataType: 'json'
+        })
+        .done(function(data) {
+            var result = data;
+            var livreurs = data.livreurs;
+            var map = new google.maps.Map(document.getElementById("map"));
+            var retourHTML = "";
+            var ligne = "";
+            var marker;
+            var myLatlng;
+            retourHTML += `<h3 class="sub-header">Carte Localisation</h2>
+                            <div id="map">
+                            </div>`;
+
+
+            livreurs.forEach(function(livreur) {
+              myLatlng = new google.maps.LatLng(livreur.latitude, livreur.longitude);
+              marker = new google.maps.Marker({
+                  position: myLatlng,
+                  title:livreur.nom
+              });
+              marker.setMap(map);
+            });
+
+            $('#all').html(retourHTML);
+        })
+        .fail(function() {
+            $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
+        })
+        .always(function() {
+            //
+        });
+    };
+
+    function chargerRestaurants() {
+      $.ajax({
+          url: './ActionServlet',
+          type: 'GET',
+          data: {
+              todo: 'listeRestaurants'
+          },
+          dataType: 'json'
+      })
+      .done(function(data) {
+          var result = data;
+          var restaurants = data.restaurants;
+          var retourHTML = "";
+          var ligne="";
+          retourHTML += `<h3 class="sub-header">Ajouter un restaurant</h2>
+                          <div class="table-responsive">
+                            <div class="input-group">
+                              <input type="text" class="form-inline" placeholder="Nom" id="name">
+                              <input type="text" class="form-inline" placeholder="Description" id="description">
+                              <input type="text" class="form-inline" placeholder="Adresse" id="address">
+                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                            </div>
+                            <h3 class="sub-header">Liste des restaurants</h2>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Dénomination</th>
+                                  <th>Description</th>
+                                  <th>Adresse</th>
+                                  <th>Latitude</th>
+                                  <th>Longitude</th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+          restaurants.forEach(function(restaurant) {
+            ligne='<tr>';
+              ligne+='<td>';
+                ligne+=restaurant.id;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=restaurant.denomination;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=restaurant.description;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=restaurant.latitude;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=restaurant.longitude;
+              ligne+='</td>';
+              ligne+='<td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
+          retourHTML+= `</tbody>
+                        </table>
+                        </div>`;
+
+          $('#all').html(retourHTML);
+      })
+      .fail(function() {
+          $.notify('Une erreur a empêché le chargement des restaurants.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function chargerClients() {
+      $.ajax({
+          url: './ActionServlet',
+          type: 'GET',
+          data: {
+              todo: 'listeClients'
+          },
+          dataType: 'json'
+      })
+      .done(function(data) {
+          var result = data;
+          var clients = data.clients;
+          var retourHTML = "";
+          var ligne="";
+          retourHTML += `<h3 class="sub-header">Ajouter un client</h2>
+                          <div class="table-responsive">
+                            <div class="input-group">
+                              <input type="text" class="form-inline" placeholder="Prénom" id="firstname">
+                              <input type="text" class="form-inline" placeholder="Nom" id="lastname">
+                              <input type="text" class="form-inline" placeholder="Adresse" id="address">
+                              <input type="text" class="form-inline" placeholder="Email" id="email">
+                              <input type="text" class="form-inline" placeholder="Mot de passe" id="password">
+                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                            </div>
+                            <h3 class="sub-header">Liste des clients</h2>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Prénom</th>
+                                  <th>Nom</th>
+                                  <th>Adresse</th>
+                                  <th>Email</th>
+                                  <th>Latitude</th>
+                                  <th>Longitude</th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+          clients.forEach(function(client) {
+            ligne='<tr>';
+              ligne+='<td>';
+                ligne+=client.id;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.nom;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.prenom;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.adresse;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.email;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.latitude;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=client.longitude;
+              ligne+='</td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
+          retourHTML+= `</tbody>
+                        </table>
+                        </div>`;
+
+          $('#all').html(retourHTML);
+      })
+      .fail(function() {
+          $.notify('Une erreur a empêché le chargement des clients.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function chargerProduits() {
+      $.ajax({
+          url: './ActionServlet',
+          type: 'GET',
+          data: {
+              todo: 'listeProduits'
+          },
+          dataType: 'json'
+      })
+      .done(function(data) {
+          var result = data;
+          var produits = data.produits;
+          var retourHTML = "";
+          var ligne="";
+          retourHTML += `<h3 class="sub-header">Ajouter un produit</h3>
+                        <div class="table-responsive">
+                          <div class="input-group">
+                            <input type="text" class="form-inline" placeholder="id restaurant" id="idresto">
+                            <input type="text" class="form-inline" placeholder="Nom" id="name">
+                            <input type="text" class="form-inline" placeholder="Description" id="description">
+                            <input type="number" placeholder="Poids 0g"></input>
+                            <input type="number" placeholder="Prix 0€"></input>
+                            <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                          </div>
+                          <h3 class="sub-header">Liste des produits</h3>
+                          <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Id</th>
+                                <th>Dénomination</th>
+                                <th>Description</th>
+                                <th>Prix</th>
+                                <th>Poids</th>
+                              </tr>
+                            </thead>
+                            <tbody>`;
+
+          produits.forEach(function(produit) {
+            ligne='<tr>';
+              ligne+='<td>';
+                ligne+=produit.id;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=produit.denomination;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=produit.description;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=produit.prix;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=produit.poids;
+              ligne+='</td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
+          retourHTML+= `</tbody>
+              </table>
+              </div>`;
+
+          $('#all').html(retourHTML);
+      })
+      .fail(function() {
+          $.notify('Une erreur a empêché le chargement des produits.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function chargerLivreurs() {
+      $.ajax({
+          url: './ActionServlet',
+          type: 'GET',
+          data: {
+              todo: 'listeLivreurs'
+          },
+          dataType: 'json'
+      })
+      .done(function(data) {
+          var result = data;
+          var livreurs = data.livreurs;
+          var retourHTML = "";
+          var ligne="";
+          retourHTML += `<h3 class="sub-header">Ajouter un livreur</h3>
+                          <div class="table-responsive">
+                            <div class="input-group">
+                              <div class="btn-group" style="padding-right: 10px">
+                                <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span data-bind="label">Type (D,V)</span> <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Drone</a></li>
+                                    <li><a href="#">Livreur</a></li>
+                                </ul>
+                              </div>
+                              <input type="number" placeholder="Charge Max (g)"></input>
+                              <input type="text" class="form-inline" placeholder="Adresse" id="adresse">
+                              <input type="number" placeholder="Vitesse 0km/h"></input>
+                              <input type="text" class="form-inline" placeholder="Nom" id="nom">
+                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                            </div>
+                            <h3 class="sub-header">Liste des livreurs</h3>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Dispo</th>
+                                  <th>ChargeMax</th>
+                                  <th>Latitude</th>
+                                  <th>Longitude</th>
+                                  <th>Type</th>
+                                  <th>Vitesse</th>
+                                  <th>Nom</th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+          livreurs.forEach(function(livreur) {
+            ligne='<tr>';
+              ligne+='<td>';
+                ligne+=livreur.id;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.dispo
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.chargemax;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.latitude;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.longitude;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.type;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.vitesse;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=livreur.nom;
+              ligne+='</td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
+          retourHTML+= `</tbody>
+              </table>
+              </div>`;
+
+          $('#all').html(retourHTML);
+      })
+      .fail(function() {
+          $.notify('Une erreur a empêché le chargement des livreurs.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function chargerCommandes() {
+      $.ajax({
+          url: './ActionServlet',
+          type: 'GET',
+          data: {
+              todo: 'listeCommandes'
+          },
+          dataType: 'json'
+      })
+      .done(function(data) {
+          var result = data;
+          var livreurs = data.commandes;
+          var retourHTML = "";
+          var ligne="";
+          retourHTML += `<h3 class="sub-header">Liste des commandes</h3>
+                          <div class="table-responsive">
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Début commande</th>
+                                  <th>Fin commande</th>
+                                  <th>Status</th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>`;
+
+          commandes.forEach(function(commande) {
+            ligne='<tr>';
+              ligne+='<td>';
+                ligne+=commande.id;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=commande.dateDebut
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=commande.dateFin;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=commande.etat;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+='<a href="#" onclick="chargerCommande(' + commande.id + ')">Détails</a>';
+              ligne+='</td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
+          retourHTML+= `</tbody>
+              </table>
+              </div>`;
+
+          $('#all').html(retourHTML);
+      })
+      .fail(function() {
+          $.notify('Une erreur a empêché le chargement des commandes.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+    
+    function creerClient() {
+      $.ajax({
+        url: './ActionServlet',
+        type: 'POST',
+        data: {
+            todo: 'creerClient',
+            nom: document.getElementById('lastname').value,
+            prenom: document.getElementById('firstname').value,
+            adresse: document.getElementById('address').value,
+            mail: document.getElementById('email').value,
+            mdp: document.getElementById('password').value,
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+          $.notify('Création réussie.', 'success');
+      })
+      .fail(function() {
+          $.notify('Erreur de la Servlet. Création échouée.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+</script>
 
     <script>
        $( document.body ).on( 'click', '.dropdown-menu li', function( event ) {
