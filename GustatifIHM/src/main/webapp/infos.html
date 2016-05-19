@@ -8,6 +8,8 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
 
     <title>Gustat'IF - Modification infos</title>
 
@@ -45,7 +47,7 @@
       <form class="form-signin">
         <div class="page-header">
             <h1>Modification de vos informations personnelles</h1>
-            <p>Modifiez le champ correspondant à l'information de votre choix</p><br />
+            <p>Modifiez le champ correspondant à l'information de votre choix</p>
         </div>
         <label for="inputNom">Nom</label>
         <input type="text" id="inputNom" class="form-control" placeholder="Ancien nom" required autofocus><br />
@@ -67,8 +69,38 @@
                 <input type="checkbox" value="geo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
             </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmer</button>
+        <a class="btn btn-lg btn-primary btn-block" onclick="modificationInfos()">Confirmer</a>
       </form>
+
+        <script>
+            function inscription() {
+            $.ajax({
+                url: './ActionServlet',
+                type: 'POST',
+                data: {
+                    todo: 'inscription',
+                    nom: document.getElementById('inputNom').value,
+                    prenom: document.getElementById('inputPrenom').value,
+                    adresse: document.getElementById('inputAdresse').value,
+                    mail: document.getElementById('inputEmail').value,
+                    mdp: document.getElementById('inputMdp').value,
+                    mdp2: document.getElementById('inputConfirmMdp').value,
+                    conditions: document.getElementById('inputConditions').value,
+                    geoloc: document.getElementById('inputGeo').value,
+                },
+                dataType: 'json'
+            })
+            .done(function(data) {
+                $.notify('Connexion réussie.', 'success');
+            })
+            .fail(function() {
+                $.notify('ERREUR de la servlet, connexion impossible', 'error');
+            })
+            .always(function() {
+                //
+            });
+            };
+        </script>
 
     </div> <!-- /container -->
 
