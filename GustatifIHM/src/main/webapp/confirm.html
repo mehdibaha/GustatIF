@@ -119,7 +119,14 @@
                         retourHTML += commandes[i].dateJour;
                         retourHTML += '</div></div><div class="col-md-2"><div>';
                         retourHTML += commandes[i].etat;
-                        retourHTML += '</div></div><div class="col-md-2"><div><a class="btn btn-info" type="button" href="details.html?id=';
+                        if(commandes[i].etat === "Non Confirmée")
+                        {
+                            retourHTML += '</div></div><div class="col-md-2"><div><a class="btn btn-info" type="button" href="confirm_order.html?id=';
+                        }
+                        else
+                        {
+                            retourHTML += '</div></div><div class="col-md-2"><div><a class="btn btn-info" type="button" href="details.html?id=';
+                        }
                         retourHTML += commandes[i].id;
                         retourHTML += '">Détails</a></div></div></div>';
                     }

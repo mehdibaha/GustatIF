@@ -20,7 +20,7 @@
     <link href="css/index.css" rel="stylesheet">
   </head>
 
-  <body class="home">
+  <body class="home" onload="chargerNomPrenom();chargerInfosCommande();">
     <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -31,11 +31,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="#">Bienvenue <span id="username">UserName</span></a></li>
                 <li><a href="home.html">Restaurants</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="orders.html">Mes commandes</a></li>
+                <li class="active"><a href="confirm.html">Mes commandes</a></li>
                 <li><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -48,11 +48,11 @@
             <h1>Détails Commande</h1>
         </div><br />
         <div class="row">
-            <div class="col-md-6"><span class="h3">Commande No -122270</h3></div>
-            <div class="col-md-6"><span class="h3">Etat: </span><span class="h3"><span class="label label-success">Livrée</span></span></div>
+            <div class="col-md-6"><span class="h3">Commande No -<span id="noCommande">00000</span></span></div>
+            <div class="col-md-6"><span class="h3">Etat: </span><span class="h3"><span class="label label-default" id="champState">Chargement</span></span></div>
         </div><br /><!-- labels : label-default gris, label-primary bleu, label-info bleu ciel, label-warning orange, label-danger rouge-->
         <div id="errorMessage" class="alert alert-warning" style="visibility:hidden">PROBLEM</div><br />
-        <div>
+        <div id="tableau">
             <div class="row">
                 <div class="col-md-2">
                     <div><b>Restaurant</b></div>
@@ -127,9 +127,103 @@
         </div><br />
         <div class="row">
             <label for="price">Prix Total:</label>
-            <input type="text" class="form-inline" id="price" value="66€" disabled>
+            <input type="text" class="form-inline" id="price" value="- €" disabled>
         </div>
     </div> <!-- /container -->
 
+    <script>
+            
+            function chargerNomPrenom() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'getClientConnecte'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "" + data.prenom + " " + data.nom;
+                    $('#username').html(retourHTML);
+                })
+                .fail(function() {
+                    $('#username').html("ERR#42");
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function chargerInfosCommande() {
+            $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'infosCommande',
+                        idCommande: location.search.slice(1).substring(3)
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    $('#noCommande').html(data.commande.id);
+                    $('#champState').html(data.commande.etat);
+                    $('#price').val(data.commande.prixTotal+"€");
+                    
+                    if(data.commande.etat === "En cours")
+                    {
+                        $('#champState').removeClass().addClass('label label-warning');
+                    }
+                    else if(data.commande.etat === "Annulée")
+                    {
+                        $('#champState').removeClass().addClass('label label-danger');
+                    }
+                    else if(data.commande.etat === "Livrée")
+                    {
+                        $('#champState').removeClass().addClass('label label-success');
+                    }
+                    else if(data.commande.etat === "Non Confirmée")
+                    {
+                        $('#champState').removeClass().addClass('label label-info');
+                    }
+                    
+                    var retourHTML = '<div class="row"><div class="col-md-2"><div><b>Restaurant</b></div></div>';
+                    retourHTML += '<div class="col-md-1"><div><b>Date</b></div></div>';
+                    retourHTML += '<div class="col-md-2"><div><b>Heure commande</b></div></div>';
+                    retourHTML += '<div class="col-md-2"><div><b>Heure livraison</b></div></div>';
+                    retourHTML += '<div class="col-md-3"><div><b>Produits commandés</b></div></div>';
+                    retourHTML += '<div class="col-md-1"><div><b>Prix</b></div></div>';
+                    retourHTML += '<div class="col-md-1"><div><b>Quantité</b></div></div></div>';
+                    
+                    var produits = data.commande.produits;
+                    for (i = 0; i < produits.length; i++) {
+                        retourHTML += '<div class="row"> <div class="col-md-2"><div>';
+                        retourHTML += data.commande.nomRestaurant;
+                        retourHTML += '</div></div><div class="col-md-1"><div>';
+                        retourHTML += data.commande.dateJour;
+                        retourHTML += '</div></div><div class="col-md-2"><div>';
+                        retourHTML += data.commande.heureCommande;
+                        retourHTML += '</div></div><div class="col-md-2"><div>';
+                        retourHTML += data.commande.heureLivraison;
+                        retourHTML += '</div></div><div class="col-md-3"><div>';
+                        retourHTML += produits[i].denomination;
+                        retourHTML += '</div></div><div class="col-md-1"><div>';
+                        retourHTML += produits[i].prix;
+                        retourHTML += '€</div></div><div class="col-md-1"><div>';
+                        retourHTML += produits[i].quantite;
+                        retourHTML += '</div></div></div>';
+                    }
+                    
+                    $('#tableau').html(retourHTML);
+                })
+                .fail(function() {
+                    $.notify("Impossible de charger les informations relatives à cette commande.", 'error');
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+    </script>
+    
   </body>
 </html>

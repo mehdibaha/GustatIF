@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Client;
+import service.ServiceMetier;
 
 /**
  *
@@ -39,7 +40,8 @@ public class ModifInfosAction extends Action {
             geoloc = Boolean.parseBoolean(request.getParameter("geoloc"));
             
             Client client = serviceMetier.TrouverClientParId(idClient);
-            this.serviceMetier.ModifierInfoPersos(client,nom,prenom,adresse,mail,mdp,mdp2,conditions,geoloc);
+            boolean state = ServiceMetier.ModifierInfoPersos(client,nom,prenom,adresse,mail,mdp,mdp2,conditions,geoloc);
+            request.setAttribute("state", state);
             
         } catch (Throwable ex) {
             Logger.getLogger(ModifInfosAction.class.getName()).log(Level.SEVERE, null, ex);

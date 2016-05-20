@@ -20,7 +20,7 @@
     <link href="css/index.css" rel="stylesheet">
   </head>
 
-  <body class="home">
+  <body class="home" onload="chargerInfosClient();">
     <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -31,11 +31,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li><a href="#">Bienvenue UserName</a></li>
+                <li><a href="#">Bienvenue <span id="username">UserName</span></a></li>
                 <li><a href="home.html">Restaurants</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="orders.html">Mes commandes</a></li>
+                <li><a href="confirm.html">Mes commandes</a></li>
                 <li class="active"><a href="infos.html">Modifier Paramètres Utilisateur <span class="glyphicon glyphicon-cog"></span></a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
@@ -60,45 +60,81 @@
         <label for="inputMdp" class="sr-only">Nouveau mot de passe</label>
         <input type="password" id="inputMdp" class="form-control" placeholder="Nouveau mot de passe" required>
         <label for="inputConfirmMdp" class="sr-only">Confirmer mot de passe</label>
-        <input type="password" id="inputConfirmMdp" class="form-control" placeholder="Ancien mot de passe" required>
+        <input type="password" id="inputConfirmMdp" class="form-control" placeholder="Confirmer mot de passe" required>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="conditions">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
+                <input type="checkbox" value="conditions" id="inputConditions">J'accepte les conditions et termes généraux d'utilisation de gustat'if</input>
             </label>
             <label>
-                <input type="checkbox" value="geo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
+                <input type="checkbox" value="geo" id="inputGeo">J'accepte l'utilisation de ma géolocalisation par gustat'if</input>
             </label>
         </div>
-        <a class="btn btn-lg btn-primary btn-block" onclick="modificationInfos()">Confirmer</a>
+        <a class="btn btn-lg btn-primary btn-block" onclick="modificationInfos();">Confirmer</a>
       </form>
 
         <script>
-            function inscription() {
-            $.ajax({
-                url: './ActionServlet',
-                type: 'POST',
-                data: {
-                    todo: 'inscription',
-                    nom: document.getElementById('inputNom').value,
-                    prenom: document.getElementById('inputPrenom').value,
-                    adresse: document.getElementById('inputAdresse').value,
-                    mail: document.getElementById('inputEmail').value,
-                    mdp: document.getElementById('inputMdp').value,
-                    mdp2: document.getElementById('inputConfirmMdp').value,
-                    conditions: document.getElementById('inputConditions').value,
-                    geoloc: document.getElementById('inputGeo').value,
-                },
-                dataType: 'json'
-            })
-            .done(function(data) {
-                $.notify('Connexion réussie.', 'success');
-            })
-            .fail(function() {
-                $.notify('ERREUR de la servlet, connexion impossible', 'error');
-            })
-            .always(function() {
-                //
-            });
+            function modificationInfos() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'POST',
+                    data: {
+                        todo: 'modificationInfos',
+                        nom: document.getElementById('inputNom').value,
+                        prenom: document.getElementById('inputPrenom').value,
+                        adresse: document.getElementById('inputAdresse').value,
+                        mail: document.getElementById('inputEmail').value,
+                        mdp: document.getElementById('inputMdp').value,
+                        mdp2: document.getElementById('inputConfirmMdp').value,
+                        conditions: $("#inputConditions").is(":checked"),
+                        geoloc: $("#inputGeo").is(":checked")
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    if(data.state)
+                    {
+                        $.notify('Les informations ont été modifiées.', 'success');
+                    }
+                    else
+                    {
+                        $.notify('Echec. Vous devez accepter nos conditions et entrer les mêmes mot de passe.', 'warn');
+                    }
+                })
+                .fail(function() {
+                    $.notify("ERREUR de la servlet, l'action a échouée", 'error');
+                })
+                .always(function() {
+                    //
+                });
+            };
+            
+            function chargerInfosClient() {
+                $.ajax({
+                    url: './ActionServlet',
+                    type: 'GET',
+                    data: {
+                        todo: 'getClientConnecte'
+                    },
+                    dataType: 'json'
+                })
+                .done(function(data) {
+                    var retourHTML = "" + data.prenom + " " + data.nom;
+                    $('#username').html(retourHTML);
+                    $('#inputNom').val(data.nom);
+                    $('#inputPrenom').val(data.prenom);
+                    $('#inputAdresse').val(data.adresse);
+                    $('#inputEmail').val(data.mail);
+                    $('#inputNom').attr('placeholder',data.nom);
+                    $('#inputPrenom').attr('placeholder',data.prenom);
+                    $('#inputAdresse').attr('placeholder',data.adresse);
+                    $('#inputEmail').attr('placeholder',data.mail);
+                })
+                .fail(function() {
+                    $('#username').html("ERR#42");
+                })
+                .always(function() {
+                    //
+                });
             };
         </script>
 
