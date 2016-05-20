@@ -74,6 +74,13 @@
 </div>
 
 <script>
+    var typeLivreur;
+    function setTypeListener() {
+      $('.dropdown-menu li a').on('click', function() {
+        typeLivreur = $(this).text().toLowerCase();
+      }
+    }
+
     function chargerCommande(id) {
       $.ajax({
             url: './ActionServlet',
@@ -429,6 +436,7 @@
     };
 
     function chargerLivreurs() {
+      setTypeListener();
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -452,9 +460,9 @@
                                     <li><a href="#">Livreur</a></li>
                                 </ul>
                               </div>
-                              <input type="number" placeholder="Charge Max (g)"></input>
+                              <input type="number" placeholder="Charge Max (g)" id="chargeMax"></input>
                               <input type="text" class="form-inline" placeholder="Adresse" id="adresse">
-                              <input type="number" placeholder="Vitesse 0km/h"></input>
+                              <input type="number" placeholder="Vitesse 0km/h" id="vitesse"></input>
                               <input type="text" class="form-inline" placeholder="Nom" id="nom">
                               <a class="btn btn-sm btn-primary" href="#">Ok</a>
                             </div>
@@ -586,17 +594,21 @@
         url: './ActionServlet',
         type: 'POST',
         data: {
-            todo: 'creerClient',
+            todo: 'inscription',
             nom: document.getElementById('lastname').value,
             prenom: document.getElementById('firstname').value,
             adresse: document.getElementById('address').value,
             mail: document.getElementById('email').value,
             mdp: document.getElementById('password').value,
+            mdp: document.getElementById('password').value
+            conditions: true,
+            geoloc: true
         },
         dataType: 'json'
       })
       .done(function(data) {
           $.notify('Création réussie.', 'success');
+          chargerClients();
       })
       .fail(function() {
           $.notify('Erreur de la Servlet. Création échouée.', 'error');
@@ -605,6 +617,82 @@
           //
       });
     };
+
+    function creerRestaurant() {
+      $.ajax({
+        url: './ActionServlet',
+        type: 'POST',
+        data: {
+            todo: 'creerRestaurant',
+            denomination: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            adresse: document.getElementById('address').value
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+          $.notify('Création réussie.', 'success');
+          chargerClients();
+      })
+      .fail(function() {
+          $.notify('Erreur de la Servlet. Création échouée.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function creerProduit() {
+      $.ajax({
+        url: './ActionServlet',
+        type: 'POST',
+        data: {
+            todo: 'creerProduit',
+            idresto: document.getElementById('idresto').value,
+            denomination: document.getElementById('name').value,
+            poids: document.getElementById('poids').value,
+            prix: document.getElementById('prix').value
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+          $.notify('Création réussie.', 'success');
+          chargerClients();
+      })
+      .fail(function() {
+          $.notify('Erreur de la Servlet. Création échouée.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
+    function creerLivreur() {
+      $.ajax({
+        url: './ActionServlet',
+        type: 'POST',
+        data: {
+            todo: 'creerLivreur',
+            type: typeLivreur,
+            adresse: document.getElementById('adresse').value,
+            chargeMax: document.getElementById('chargeMax').value,
+            vitesse: document.getElementById('vitesse').value
+            nom: document.getElementById('nom').value
+        },
+        dataType: 'json'
+      })
+      .done(function(data) {
+          $.notify('Création réussie.', 'success');
+          chargerClients();
+      })
+      .fail(function() {
+          $.notify('Erreur de la Servlet. Création échouée.', 'error');
+      })
+      .always(function() {
+          //
+      });
+    };
+
 </script>
 
     <script>
