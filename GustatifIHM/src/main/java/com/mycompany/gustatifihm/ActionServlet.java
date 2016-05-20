@@ -250,6 +250,57 @@ public class ActionServlet extends HttpServlet {
                             ms.printInfosClient(out, (Client) client);
                             break;
                         }
+                        case "creerRestaurant" :
+                         {
+                            Action action = new CreerRestaurantAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object restaurant = request.getAttribute("restaurant");
+                            if(restaurant != null)
+                            {
+                                ms.printState(out,true);
+                            }
+                            else
+                            {
+                                ms.printState(out,false);
+                            }
+                            break;
+                        }
+                        case "creerLivreur" :
+                         {
+                            Action action = new CreerRestaurantAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object livreur = request.getAttribute("livreur");
+                            if(livreur != null)
+                            {
+                                ms.printState(out,true);
+                            }
+                            else
+                            {
+                                ms.printState(out,false);
+                            }
+                            break;
+                        }
+                        case "creerProduit" :
+                         {
+                            Action action = new CreerRestaurantAction();
+                            action.setServiceMetier(sm);
+                            action.execute(request);
+
+                            Object produit = request.getAttribute("produit");
+                            if(produit != null)
+                            {
+                                ms.printState(out,true);
+                            }
+                            else
+                            {
+                                ms.printState(out,false);
+                            }
+                            break;
+                        }
                         case "test" :
                         {
                             Produit p = new Produit("Medhi", "Un mec du forum", 0f, 1000f);

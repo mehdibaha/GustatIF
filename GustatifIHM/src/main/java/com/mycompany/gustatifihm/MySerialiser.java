@@ -228,7 +228,7 @@ public class MySerialiser {
             }
             else
             {
-                jsonCommande.addProperty("dateFin", "null");
+                jsonCommande.addProperty("dateFin", "Non Livrée");
             }
             
             String etat = c.getStatus().toString();
@@ -314,7 +314,9 @@ public class MySerialiser {
             }
             jsonLivreur.addProperty("latitude", l.getLatitude());
             jsonLivreur.addProperty("longitude", l.getLongitude());
-            jsonLivreur.addProperty("dispo", l.isDispo());
+            
+            String dispo = l.isDispo() ? "Disponible" : "Non disponible";
+            jsonLivreur.addProperty("dispo", dispo);
             
             jsonListe.add(jsonLivreur);
         }

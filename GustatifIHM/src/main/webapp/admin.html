@@ -10,6 +10,8 @@
     <meta name="author" content="">
     <script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
     <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhf3JleYpal9S-xouJYH8lf7Dvz5Y2Nko"
+     async defer></script>
 
     <title>Gustat'IF - Interface Administrateur</title>
 
@@ -20,13 +22,13 @@
     <link href="css/admin.css" rel="stylesheet">
   </head>
 
-  <body onload="chargerCarte()">
+  <body onload="initMap(); chargerCarte();">
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="sidebar-brand">Gustatif Admin</a></li>
-            <li class="active"><a href="#">Carte Localisation</a></li>
+            <li class="active"><a href="#" onclick="chargerCarte()">Carte Localisation</a></li>
             <li><a href="#" onclick="chargerClients()">Clients</a></li>
             <li><a href="#" onclick="chargerCommandes()">Commandes</a></li>
             <li><a href="#" onclick="chargerRestaurants()">Restaurants</a></li>
@@ -39,7 +41,7 @@
 
 <!-- DEBUT DU DIV PRINCIPAL -->
 <div id="all">
-<h3 class="sub-header">Carte Localisation</h2>
+<h3 class="sub-header">Carte Localisation</h3>
 <div id="map"></div>
 <h5>Commandes en cours : <span id="nbCommandes">25</span></h5>
 </div>
@@ -144,65 +146,67 @@
     };
 
     function chargerCarte() {
-      $.ajax({
-            url: './ActionServlet',
-            type: 'GET',
-            data: {
-                todo: 'listeLivreurs'
-            },
-            dataType: 'json'
+        var retourHTML = `<h3 class="sub-header">Carte Localisation</h2>
+                <div id="map">
+                </div>`;
+        $('#all').html(retourHTML);
+        initMap();
+        
+        $.ajax({
+              url: './ActionServlet',
+              type: 'GET',
+              data: {
+                  todo: 'listeLivreurs'
+              },
+              dataType: 'json'
+          })
+          .done(function(data) {
+              var result = data;
+              var livreurs = data.livreurs;
+              var marker;
+              var myLatlng;
+
+              livreurs.forEach(function(livreur) {
+                myLatlng = new google.maps.LatLng(livreur.latitude, livreur.longitude);
+                marker = new google.maps.Marker({
+                    position:myLatlng,
+                    title:livreur.nom
+                });
+                marker.setMap(map);
+              });
+
+              displayNbCommandes();
+
+          })
+          .fail(function() {
+              $.notify('Une erreur a empêché le chargement de la carte.', 'error');
+          })
+          .always(function() {
+              //
+          });
+      };
+    
+    function displayNbCommandes() {
+        $.ajax({
+        url: './ActionServlet',
+        type: 'GET',
+        data: {
+            todo: 'listeCommandes'
+        },
+        dataType: 'json'
         })
         .done(function(data) {
             var result = data;
-            var livreurs = data.livreurs;
-            var map = new google.maps.Map(document.getElementById("map"));
-            var retourHTML = "";
-            var ligne = "";
-            var marker;
-            var myLatlng;
-            retourHTML += `<h3 class="sub-header">Carte Localisation</h2>
-                            <div id="map">
-                            </div>`;
-
-
-            livreurs.forEach(function(livreur) {
-              myLatlng = new google.maps.LatLng(livreur.latitude, livreur.longitude);
-              marker = new google.maps.Marker({
-                  position:myLatlng,
-                  title:livreur.nom
-              });
-              marker.setMap(map);
-            });
-            $('#all').html(retourHTML);
-
-            $.ajax({
-            url: './ActionServlet',
-            type: 'GET',
-            data: {
-                todo: 'listeCommandes'
-            },
-            dataType: 'json'
-            })
-            .done(function(data) {
-                var result = data;
-                var length = data.commandes.length;
-                $('#nbCommandes').html(length);
-            })
-            .fail(function() {
-                $.notify('Une erreur a empêché le chargement du nombre de commandes.', 'error');
-            })
-            .always(function() {
-                //
-            });
-
+            var length = data.commandes.length;
+            $('#nbCommandes').html(length);
         })
         .fail(function() {
-            $.notify('Une erreur a empêché le chargement de la carte.', 'error');
+            $.notify('Une erreur a empêché le chargement du nombre de commandes.', 'error');
         })
         .always(function() {
             //
         });
-    };
+    }
 
     function chargerRestaurants() {
       $.ajax({
@@ -250,6 +254,9 @@
               ligne+='</td>';
               ligne+='<td>';
                 ligne+=restaurant.description;
+              ligne+='</td>';
+              ligne+='<td>';
+                ligne+=restaurant.adresse;
               ligne+='</td>';
               ligne+='<td>';
                 ligne+=restaurant.latitude;
@@ -483,7 +490,7 @@
                 ligne+=livreur.dispo
               ligne+='</td>';
               ligne+='<td>';
-                ligne+=livreur.chargemax;
+                ligne+=livreur.chargeMax;
               ligne+='</td>';
               ligne+='<td>';
                 ligne+=livreur.latitude;
@@ -624,22 +631,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
     <script src="js/bootstrap.min.js"></script>
-    var map;
     <script>
-    function initMap() {
-        var mapDiv = document.getElementById('map');
-        var latlng = new google.maps.LatLng(45.786365, 4.875355);
-        var myOptions = {
-        zoom: 8,
-        center: latlng
-        };
-        map = new google.maps.Map(mapDiv, myOptions);
-    }
-    $(window).resize(function() {
-          $('#map').height($( window ).height());
-    });
+        var map;
+        function initMap() {
+            var mapDiv = document.getElementById('map');
+            var latlng = new google.maps.LatLng(45.786365, 4.875355);
+            var myOptions = {
+            zoom: 15,
+            center: latlng
+            };
+            map = new google.maps.Map(mapDiv,myOptions);
+        }
+        $(window).resize(function() {
+              $('#map').height($( window ).height());
+        });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhf3JleYpal9S-xouJYH8lf7Dvz5Y2Nko&callback=initMap"
-         async defer></script>
   </body>
 </html>
