@@ -85,8 +85,15 @@ public class ActionServlet extends HttpServlet {
                 action.setServiceMetier(sm);
                 action.execute(request);
                    
-                //Client client = (Client) request.getAttribute("client");
-                //ms.printCreationClient(out, client);
+                Client client = (Client) request.getAttribute("client");
+                if(client != null)
+                {
+                    ms.printState(out,true);
+                }
+                else
+                {
+                    ms.printState(out,false);
+                }
             }
             else
             {
@@ -129,8 +136,7 @@ public class ActionServlet extends HttpServlet {
                             action.setServiceMetier(sm);
                             action.execute(request);
 
-                            //Object restaurant = request.getAttribute("restaurant");
-                            //ms.printFicheRestaurant(out, (Restaurant)restaurant);
+                            ms.printState(out,(boolean) request.getAttribute("state"));
                             break;
                         }
                         case "getPlats" :

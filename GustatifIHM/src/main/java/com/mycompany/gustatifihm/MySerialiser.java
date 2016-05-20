@@ -332,6 +332,8 @@ public class MySerialiser {
         
         jsonClient.addProperty("nom", c.getNom());
         jsonClient.addProperty("prenom", c.getPrenom());
+        jsonClient.addProperty("adresse", c.getAdresse());
+        jsonClient.addProperty("mail", c.getMail());
         
         String json = gson.toJson(jsonClient);      
         out.println(json);

@@ -64,16 +64,23 @@
                     mail: document.getElementById('inputEmail').value,
                     mdp: document.getElementById('inputMdp').value,
                     mdp2: document.getElementById('inputConfirmMdp').value,
-                    conditions: document.getElementById('inputConditions').value,
-                    geoloc: document.getElementById('inputGeo').value,
+                    conditions: $("#inputConditions").is(":checked"),
+                    geoloc: $("#inputGeo").is(":checked")
                 },
                 dataType: 'json'
             })
             .done(function(data) {
-                $.notify('Connexion réussie.', 'success');
+                if(data.state)
+                {
+                    $.notify('Inscription réussie.', 'success');
+                }
+                else
+                {
+                    $.notify('Votre inscription a échoué.', 'warn');
+                }
             })
             .fail(function() {
-                $.notify('ERREUR de la servlet, connexion impossible', 'error');
+                $.notify('ERREUR de la servlet, inscription impossible', 'error');
             })
             .always(function() {
                 //
