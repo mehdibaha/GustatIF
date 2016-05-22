@@ -38,12 +38,19 @@ public class CreerProduitAction extends Action {
         String description = request.getParameter("description");
         float prix = Float.parseFloat(request.getParameter("prix"));
         float poids = Float.parseFloat(request.getParameter("poids"));
+        long idRestaurant = Long.parseLong(request.getParameter("idRestaurant"));
         
         Produit produit = null;
+        Restaurant resto = null;
         
         try 
         {
-            produit = ServiceMetier.CreerProduit(denomination, description, prix, poids);
+            resto = ServiceMetier.TrouverRestaurantParId(idRestaurant);
+            if(resto != null)
+            {
+                // Le service métier pour associer un produit a un restaurant est manquant. On crée donc le produit sans restaurant.
+                produit = ServiceMetier.CreerProduit(denomination, description, prix, poids);  
+            }
         } 
         catch (Throwable ex) 
         {
