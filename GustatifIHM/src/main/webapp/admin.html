@@ -27,13 +27,13 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="sidebar-brand">Gustatif Admin</a></li>
-            <li class="active"><a href="#" onclick="chargerCarte()">Carte Localisation</a></li>
-            <li><a href="#" onclick="chargerClients()">Clients</a></li>
-            <li><a href="#" onclick="chargerCommandes()">Commandes</a></li>
-            <li><a href="#" onclick="chargerRestaurants()">Restaurants</a></li>
-            <li><a href="#" onclick="chargerProduits()">Produits</a></li>
-            <li><a href="#" onclick="chargerLivreurs()">Livreurs</a></li>
+            <li class="sidebar-brand">Gustatif Admin</li>
+            <li id="carte" class="active"><a href="#" onclick="chargerCarte();">Carte Localisation</a></li>
+            <li id="clients"><a href="#" onclick="chargerClients();">Clients</a></li>
+            <li id="commandes"><a href="#" onclick="chargerCommandes();">Commandes</a></li>
+            <li id="restaurants"><a href="#" onclick="chargerRestaurants();">Restaurants</a></li>
+            <li id="produits"><a href="#" onclick="chargerProduits();">Produits</a></li>
+            <li id="livreurs"><a href="#" onclick="chargerLivreurs();">Livreurs</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -73,14 +73,23 @@
           
     </div>
   </div>
-</div>
 
 <script>
-    var typeLivreur;
+    var typeLivreur = "";
     function setTypeListener() {
-      $('.dropdown-menu li a').on('click', function() {
-        typeLivreur = $(this).text().toLowerCase();
-      }
+        $('.dropdown-menu li a').on('click', function() {
+          typeLivreur = $(this).text().toLowerCase();
+        });
+    }
+    
+    function activeMenu(param) {
+        $('.nav li').removeClass("active");
+        $('#' + param).addClass("active");
+    }
+    
+    function majTypeLivreur()
+    {
+        //typeLivreur = $("this").text().toLowerCase();
     }
 
     function chargerCommande(id) {
@@ -96,6 +105,7 @@
         .done(function(data) {
           var result = data;
           var commande = data.commande;
+          var produits = data.commande.produits;
           var retourHTML = "";
           retourHTML += `<h3 class="sub-header">Référence Commande : <span id="idCommande">1</span></h2>
                           <p>Date début : <span id="date_debut"></span></p>
@@ -117,30 +127,33 @@
                               </thead>
                               <tbody>`;
 
+              console.log(produits);
+          produits.forEach(function(produit) {
+              console.log(produit);
+            ligne='<tr>';
+            ligne+='<td>';
+            ligne+=produit.id;
+            ligne+='</td>';
+            ligne+='<td>';
+            ligne+=produit.quantite;
+            ligne+='</td>';
+            ligne+='<td>';
+            ligne+=produit.prix;
+            ligne+='</td>';
+            ligne+='</tr>';
+            retourHTML += ligne;
+          });
+
           retourHTML += `</tbody>
               </table>
-              <h5>Prix total : <span id="prix">25</span>€</h5>`;
-
-          commande.produits.forEach(function(produit) {
-          ligne='<tr>';
-            ligne+='<td>';
-              ligne+=produit.id;
-            ligne+='</td>';
-            ligne+='<td>';
-              ligne+=produit.quantite;
-            ligne+='</td>';
-            ligne+='<td>';
-              ligne+=produit.prix;
-            ligne+='</td>';
-          ligne+='</tr>';
-          retourHTML += ligne;
-          });
+              <h5>Prix total : <span id="prix">-</span>€</h5>`;
 
           $('#all').html(retourHTML);
           $('#prix').html(commande.prixTotal);
           $('#date_debut').html(commande.dateDebut);
           $('#date_fin').html(commande.dateFin);
           $('#nom_client').html(commande.nomClient);
+          $('#status').html(commande.etat);
           $('#nom_restaurant').html(commande.nomRestaurant);
           $('#id_livreur').html(commande.nomLivreur);
         })
@@ -153,11 +166,11 @@
     };
 
     function chargerCarte() {
+        activeMenu('carte');
         var retourHTML = `<h3 class="sub-header">Carte Localisation</h2>
                 <div id="map">
                 </div>`;
         $('#all').html(retourHTML);
-        initMap();
         
         $.ajax({
               url: './ActionServlet',
@@ -168,10 +181,12 @@
               dataType: 'json'
           })
           .done(function(data) {
+              initMap();
               var result = data;
               var livreurs = data.livreurs;
               var marker;
               var myLatlng;
+              initMap();
 
               livreurs.forEach(function(livreur) {
                 myLatlng = new google.maps.LatLng(livreur.latitude, livreur.longitude);
@@ -183,7 +198,6 @@
               });
 
               displayNbCommandes();
-
           })
           .fail(function() {
               $.notify('Une erreur a empêché le chargement de la carte.', 'error');
@@ -216,6 +230,7 @@
     }
 
     function chargerRestaurants() {
+        activeMenu('restaurants');
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -235,7 +250,7 @@
                               <input type="text" class="form-inline" placeholder="Nom" id="name">
                               <input type="text" class="form-inline" placeholder="Description" id="description">
                               <input type="text" class="form-inline" placeholder="Adresse" id="address">
-                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                              <a class="btn btn-sm btn-primary" href="#" onclick="creerRestaurant();">Ok</a>
                             </div>
                             <h3 class="sub-header">Liste des restaurants</h2>
                             <table class="table table-striped">
@@ -291,6 +306,7 @@
     };
 
     function chargerClients() {
+        activeMenu('clients');
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -311,8 +327,8 @@
                               <input type="text" class="form-inline" placeholder="Nom" id="lastname">
                               <input type="text" class="form-inline" placeholder="Adresse" id="address">
                               <input type="text" class="form-inline" placeholder="Email" id="email">
-                              <input type="text" class="form-inline" placeholder="Mot de passe" id="password">
-                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                              <input type="password" class="form-inline" placeholder="Mot de passe" id="password">
+                              <a class="btn btn-sm btn-primary" href="#" onclick="creerClient();">Ok</a>
                             </div>
                             <h3 class="sub-header">Liste des clients</h2>
                             <table class="table table-striped">
@@ -371,6 +387,7 @@
     };
 
     function chargerProduits() {
+        activeMenu('produits');
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -390,9 +407,9 @@
                             <input type="text" class="form-inline" placeholder="id restaurant" id="idresto">
                             <input type="text" class="form-inline" placeholder="Nom" id="name">
                             <input type="text" class="form-inline" placeholder="Description" id="description">
-                            <input type="number" placeholder="Poids 0g"></input>
-                            <input type="number" placeholder="Prix 0€"></input>
-                            <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                            <input type="number" placeholder="Poids 0g" id="poids"></input>
+                            <input type="number" placeholder="Prix 0€" id="prix"></input>
+                            <a class="btn btn-sm btn-primary" href="#" onclick="creerProduit();">Ok</a>
                           </div>
                           <h3 class="sub-header">Liste des produits</h3>
                           <table class="table table-striped">
@@ -443,7 +460,7 @@
     };
 
     function chargerLivreurs() {
-      setTypeListener();
+        activeMenu('livreurs');
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -464,14 +481,14 @@
                                 <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span data-bind="label">Type (D,V)</span> <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Drone</a></li>
-                                    <li><a href="#">Livreur</a></li>
+                                    <li><a href="#">Vélo</a></li>
                                 </ul>
                               </div>
                               <input type="number" placeholder="Charge Max (g)" id="chargeMax"></input>
                               <input type="text" class="form-inline" placeholder="Adresse" id="adresse">
                               <input type="number" placeholder="Vitesse 0km/h" id="vitesse"></input>
                               <input type="text" class="form-inline" placeholder="Nom" id="nom">
-                              <a class="btn btn-sm btn-primary" href="#">Ok</a>
+                              <a class="btn btn-sm btn-primary" href="#" onclick="creerLivreur();">Ok</a>
                             </div>
                             <h3 class="sub-header">Liste des livreurs</h3>
                             <table class="table table-striped">
@@ -524,6 +541,7 @@
               </div>`;
 
           $('#all').html(retourHTML);
+          setTypeListener();
       })
       .fail(function() {
           $.notify('Une erreur a empêché le chargement des livreurs.', 'error');
@@ -534,6 +552,7 @@
     };
 
     function chargerCommandes() {
+        activeMenu('commandes');
       $.ajax({
           url: './ActionServlet',
           type: 'GET',
@@ -599,7 +618,7 @@
     function creerClient() {
       $.ajax({
         url: './ActionServlet',
-        type: 'POST',
+        type: 'GET',
         data: {
             todo: 'inscription',
             nom: document.getElementById('lastname').value,
@@ -607,15 +626,22 @@
             adresse: document.getElementById('address').value,
             mail: document.getElementById('email').value,
             mdp: document.getElementById('password').value,
-            mdp: document.getElementById('password').value
+            mdp2: document.getElementById('password').value,
             conditions: true,
             geoloc: true
         },
         dataType: 'json'
       })
       .done(function(data) {
-          $.notify('Création réussie.', 'success');
-          chargerClients();
+            if(data.state)
+            {
+                $.notify('Création réussie.', 'success');
+            }
+            else
+            {
+                $.notify('Création impossible.', 'warn');
+            }
+            chargerClients();
       })
       .fail(function() {
           $.notify('Erreur de la Servlet. Création échouée.', 'error');
@@ -628,7 +654,7 @@
     function creerRestaurant() {
       $.ajax({
         url: './ActionServlet',
-        type: 'POST',
+        type: 'GET',
         data: {
             todo: 'creerRestaurant',
             denomination: document.getElementById('name').value,
@@ -638,8 +664,15 @@
         dataType: 'json'
       })
       .done(function(data) {
-          $.notify('Création réussie.', 'success');
-          chargerClients();
+            if(data.state)
+            {
+                $.notify('Création réussie.', 'success');
+            }
+            else
+            {
+                $.notify('Création impossible.', 'warn');
+            }
+            chargerRestaurants();
       })
       .fail(function() {
           $.notify('Erreur de la Servlet. Création échouée.', 'error');
@@ -652,19 +685,27 @@
     function creerProduit() {
       $.ajax({
         url: './ActionServlet',
-        type: 'POST',
+        type: 'GET',
         data: {
             todo: 'creerProduit',
             idRestaurant: document.getElementById('idresto').value,
             denomination: document.getElementById('name').value,
+            description: document.getElementById('description').value,
             poids: document.getElementById('poids').value,
             prix: document.getElementById('prix').value
         },
         dataType: 'json'
       })
       .done(function(data) {
-          $.notify('Création réussie.', 'success');
-          chargerClients();
+            if(data.state)
+            {
+                $.notify('Création réussie.', 'success');
+            }
+            else
+            {
+                $.notify('Création impossible.', 'warn');
+            }
+          chargerProduits();
       })
       .fail(function() {
           $.notify('Erreur de la Servlet. Création échouée.', 'error');
@@ -677,20 +718,27 @@
     function creerLivreur() {
       $.ajax({
         url: './ActionServlet',
-        type: 'POST',
+        type: 'GET',
         data: {
             todo: 'creerLivreur',
             type: typeLivreur,
             adresse: document.getElementById('adresse').value,
             chargeMax: document.getElementById('chargeMax').value,
-            vitesse: document.getElementById('vitesse').value
+            vitesse: document.getElementById('vitesse').value,
             nom: document.getElementById('nom').value
         },
         dataType: 'json'
       })
       .done(function(data) {
-          $.notify('Création réussie.', 'success');
-          chargerClients();
+            if(data.state)
+            {
+                $.notify('Création réussie.', 'success');
+            }
+            else
+            {
+                $.notify('Création impossible.', 'warn');
+            }
+          chargerLivreurs();
       })
       .fail(function() {
           $.notify('Erreur de la Servlet. Création échouée.', 'error');
@@ -716,8 +764,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>-->
     <script src="js/bootstrap.min.js"></script>
     <script>
         var map;
@@ -729,6 +777,7 @@
             center: latlng
             };
             map = new google.maps.Map(mapDiv,myOptions);
+            $('#map').height($( window ).height());
         }
         $(window).resize(function() {
               $('#map').height($( window ).height());

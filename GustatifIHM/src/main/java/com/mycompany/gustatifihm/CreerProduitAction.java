@@ -57,6 +57,6 @@ public class CreerProduitAction extends Action {
             Logger.getLogger(ModifInfosAction.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        request.setAttribute("restaurant", produit);
+        request.setAttribute("produit", produit);
     }
 }

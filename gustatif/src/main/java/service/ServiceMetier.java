@@ -308,7 +308,7 @@ public class ServiceMetier {
      * @param geoloc true si checkbox "accepter géolocalisation" cochée
      * @throws Throwable
      */
-    public static void ModifierInfoPersos(Client client, String nom, String prenom, String adresse, String mail, String mdp, String mdp2, boolean conditions, boolean geoloc) throws Throwable
+    public static boolean ModifierInfoPersos(Client client, String nom, String prenom, String adresse, String mail, String mdp, String mdp2, boolean conditions, boolean geoloc) throws Throwable
     {
         JpaUtil.creerEntityManager();
         if(geoloc && conditions && VerificationMdp(mdp,mdp2))
@@ -324,12 +324,15 @@ public class ServiceMetier {
             JpaUtil.ouvrirTransaction();
             cdao.update(client);
             JpaUtil.validerTransaction();
+            JpaUtil.fermerEntityManager();
+            return true;
         }
         else
         {
-            System.out.println("Les mots de passe ne correspondent pas");
+            System.out.println("Les mots de passe ne correspondent pas :"+mdp+" "+mdp2+" "+geoloc+" "+conditions);
+            JpaUtil.fermerEntityManager();
+            return false;
         }
-        JpaUtil.fermerEntityManager();
     }
     
     /**

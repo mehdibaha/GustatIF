@@ -127,9 +127,9 @@ public class MySerialiser {
         jsonCommande.addProperty("dateDebut", commande.getDateDebut().toString());
         
         String zeroMonth ="";
-        if(commande.getDateDebut().getMonth() < 10)
+        if(commande.getDateDebut().getMonth() < 9)
             zeroMonth = "0";
-        jsonCommande.addProperty("dateJour", commande.getDateDebut().getDate()+"/"+zeroMonth+commande.getDateDebut().getMonth()+"/20"+(commande.getDateDebut().getYear()-100));
+        jsonCommande.addProperty("dateJour", commande.getDateDebut().getDate()+"/"+zeroMonth+(commande.getDateDebut().getMonth()+1)+"/20"+(commande.getDateDebut().getYear()-100));
         
         String etat = commande.getStatus().toString();
         if(etat == "ENCOURS")
@@ -161,7 +161,7 @@ public class MySerialiser {
         }
         else
         {
-            jsonCommande.addProperty("dateFin", "null");
+            jsonCommande.addProperty("dateFin", "Non Livré");
             jsonCommande.addProperty("heureLivraison", "Non Livré");
         }
         
@@ -216,10 +216,10 @@ public class MySerialiser {
             jsonCommande.addProperty("dateDebut", c.getDateDebut().toString());
             
             String zeroMonth ="";
-            if(c.getDateDebut().getMonth() < 10)
+            if(c.getDateDebut().getMonth() < 9)
                 zeroMonth = "0";
                 
-            jsonCommande.addProperty("dateJour", c.getDateDebut().getDate()+"/"+zeroMonth+c.getDateDebut().getMonth()+"/20"+(c.getDateDebut().getYear()-100));
+            jsonCommande.addProperty("dateJour", c.getDateDebut().getDate()+"/"+zeroMonth+(c.getDateDebut().getMonth()+1)+"/20"+(c.getDateDebut().getYear()-100));
             
             Date dateFin = c.getDateFin();
             if(dateFin != null)
@@ -308,7 +308,7 @@ public class MySerialiser {
             }
             else if(l instanceof Drone)
             { 
-                jsonLivreur.addProperty("type", "Vélo");
+                jsonLivreur.addProperty("type", "Drone");
                 jsonLivreur.addProperty("vitesse", ((Drone)l).getVitesseMoy());
                 jsonLivreur.addProperty("nom", "-");
             }

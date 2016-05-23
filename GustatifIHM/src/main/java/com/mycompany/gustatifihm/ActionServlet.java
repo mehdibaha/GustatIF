@@ -49,6 +49,7 @@ public class ActionServlet extends HttpServlet {
         
         try (PrintWriter out = response.getWriter()) 
         {
+            System.out.println("Entrée Try");
             HttpSession session = request.getSession(true); //Session   
             ServiceMetier sm = new ServiceMetier();
             MySerialiser ms = new MySerialiser();
@@ -104,6 +105,7 @@ public class ActionServlet extends HttpServlet {
                 if(sessionId == null)
                 {
                     //retourne vers une page de connexion
+                    System.out.println("Erreur, le client doit être connecté");
                     this.getServletContext().getRequestDispatcher("/login.html").forward(request, response);
                 }
                 else
@@ -269,7 +271,7 @@ public class ActionServlet extends HttpServlet {
                         }
                         case "creerLivreur" :
                          {
-                            Action action = new CreerRestaurantAction();
+                            Action action = new CreerLivreurAction();
                             action.setServiceMetier(sm);
                             action.execute(request);
 
@@ -286,7 +288,7 @@ public class ActionServlet extends HttpServlet {
                         }
                         case "creerProduit" :
                          {
-                            Action action = new CreerRestaurantAction();
+                            Action action = new CreerProduitAction();
                             action.setServiceMetier(sm);
                             action.execute(request);
 
